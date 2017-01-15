@@ -1,4 +1,4 @@
-This is bison.info, produced by makeinfo version 5.2 from bison.texi.
+This is bison.info, produced by makeinfo version 6.3 from bison.texi.
 
 This manual (22 January 2015) is for GNU Bison (version 3.0.4), the GNU
 parser generator.
@@ -355,7 +355,7 @@ File: bison.info,  Node: Introduction,  Next: Conditions,  Prev: Top,  Up: Top
 Introduction
 ************
 
-"Bison" is a general-purpose parser generator that converts an annotated
+“Bison” is a general-purpose parser generator that converts an annotated
 context-free grammar into a deterministic LR or generalized LR (GLR)
 parser employing LALR(1) parser tables.  As an experimental feature,
 Bison can also generate IELR(1) or canonical LR(1) parser tables.  Once
@@ -419,7 +419,7 @@ other GNU tools.
 
    This exception applies when Bison is generating code for a parser.
 You can tell whether the exception applies to a Bison output file by
-inspecting the file for text beginning with “As a special exception…”.
+inspecting the file for text beginning with “As a special exception...”.
 The text spells out the exact terms of the exception.
 
 
@@ -1172,8 +1172,8 @@ File: bison.info,  Node: Language and Grammar,  Next: Grammar in Bison,  Up: Con
 =======================================
 
 In order for Bison to parse a language, it must be described by a
-"context-free grammar".  This means that you specify one or more
-"syntactic groupings" and give rules for constructing them from their
+“context-free grammar”.  This means that you specify one or more
+“syntactic groupings” and give rules for constructing them from their
 parts.  For example, in the C language, one kind of grouping is called
 an ‘expression’.  One rule for making an expression might be, “An
 expression can be made of a minus sign and another expression”.  Another
@@ -1182,7 +1182,7 @@ often recursive, but there must be at least one rule which leads out of
 the recursion.
 
    The most common formal system for presenting such rules for humans to
-read is "Backus-Naur Form" or “BNF”, which was developed in order to
+read is “Backus-Naur Form” or “BNF”, which was developed in order to
 specify the language Algol 60.  Any grammar expressed in BNF is a
 context-free grammar.  The input to Bison is essentially
 machine-readable BNF.
@@ -1198,13 +1198,13 @@ for more information on this.  As an experimental feature, you can
 escape these additional restrictions by requesting IELR(1) or canonical
 LR(1) parser tables.  *Note LR Table Construction::, to learn how.
 
-   Parsers for LR(1) grammars are "deterministic", meaning roughly that
+   Parsers for LR(1) grammars are “deterministic”, meaning roughly that
 the next grammar rule to apply at any point in the input is uniquely
 determined by the preceding input and a fixed, finite portion (called a
-"lookahead") of the remaining input.  A context-free grammar can be
-"ambiguous", meaning that there are multiple ways to apply the grammar
+“lookahead”) of the remaining input.  A context-free grammar can be
+“ambiguous”, meaning that there are multiple ways to apply the grammar
 rules to get the same inputs.  Even unambiguous grammars can be
-"nondeterministic", meaning that no fixed lookahead always suffices to
+“nondeterministic”, meaning that no fixed lookahead always suffices to
 determine the next grammar rule to apply.  With the proper declarations,
 Bison is also able to parse these more general context-free grammars,
 using a technique known as GLR parsing (for Generalized LR). Bison’s GLR
@@ -1212,12 +1212,12 @@ parsers are able to handle any context-free grammar for which the number
 of possible parses of any given string is finite.
 
    In the formal grammatical rules for a language, each kind of
-syntactic unit or grouping is named by a "symbol".  Those which are
+syntactic unit or grouping is named by a “symbol”.  Those which are
 built by grouping smaller constructs according to grammatical rules are
-called "nonterminal symbols"; those which can’t be subdivided are called
-"terminal symbols" or "token types".  We call a piece of input
-corresponding to a single terminal symbol a "token", and a piece
-corresponding to a single nonterminal symbol a "grouping".
+called “nonterminal symbols”; those which can’t be subdivided are called
+“terminal symbols” or “token types”.  We call a piece of input
+corresponding to a single terminal symbol a “token”, and a piece
+corresponding to a single nonterminal symbol a “grouping”.
 
    We can use the C language as an example of what symbols, terminal and
 nonterminal, mean.  The tokens of C are identifiers, constants (numeric
@@ -1260,8 +1260,8 @@ There would be many other rules for ‘statement’, one for each kind of
 statement in C.
 
    One nonterminal symbol must be distinguished as the special one which
-defines a complete utterance in the language.  It is called the "start
-symbol".  In a compiler, this means a complete input program.  In the C
+defines a complete utterance in the language.  It is called the “start
+symbol”.  In a compiler, this means a complete input program.  In the C
 language, the nonterminal symbol ‘sequence of definitions and
 declarations’ plays this role.
 
@@ -1285,14 +1285,14 @@ File: bison.info,  Node: Grammar in Bison,  Next: Semantic Values,  Prev: Langua
 
 A formal grammar is a mathematical construct.  To define the language
 for Bison, you must write a file expressing the grammar in Bison syntax:
-a "Bison grammar" file.  *Note Bison Grammar Files: Grammar File.
+a “Bison grammar” file.  *Note Bison Grammar Files: Grammar File.
 
    A nonterminal symbol in the formal grammar is represented in Bison
 input as an identifier, like an identifier in C.  By convention, it
 should be in lower case, such as ‘expr’, ‘stmt’ or ‘declaration’.
 
    The Bison representation for a terminal symbol is also called a
-"token type".  Token types as well can be represented as C-like
+“token type”.  Token types as well can be represented as C-like
 identifiers.  By convention, these identifiers should be upper case to
 distinguish them from nonterminals: for example, ‘INTEGER’,
 ‘IDENTIFIER’, ‘IF’ or ‘RETURN’.  A terminal symbol that stands for a
@@ -1335,7 +1335,7 @@ equally grammatical.
    But the precise value is very important for what the input means once
 it is parsed.  A compiler is useless if it fails to distinguish between
 4, 1 and 3989 as constants in the program!  Therefore, each token in a
-Bison grammar has both a token type and a "semantic value".  *Note
+Bison grammar has both a token type and a “semantic value”.  *Note
 Defining Language Semantics: Semantics, for details.
 
    The token type is a terminal symbol defined in the grammar, such as
@@ -1370,7 +1370,7 @@ File: bison.info,  Node: Semantic Actions,  Next: GLR Parsers,  Prev: Semantic V
 
 In order to be useful, a program must do more than parse input; it must
 also produce some output based on the input.  In a Bison grammar, a
-grammar rule can have an "action" made up of C statements.  Each time
+grammar rule can have an “action” made up of C statements.  Each time
 the parser recognizes a match for that rule, the action is executed.
 *Note Actions::.
 
@@ -1402,7 +1402,7 @@ is, it may not be able to decide (on the basis of the input read so far)
 which of two possible reductions (applications of a grammar rule)
 applies, or whether to apply a reduction or read more of the input and
 apply a reduction later in the input.  These are known respectively as
-"reduce/reduce" conflicts (*note Reduce/Reduce::), and "shift/reduce"
+“reduce/reduce” conflicts (*note Reduce/Reduce::), and “shift/reduce”
 conflicts (*note Shift/Reduce::).
 
    To use a grammar that is not easily modified to be LR(1), a more
@@ -1666,7 +1666,7 @@ because the grammar as it stands is ambiguous.  One of the parsers
 eventually reduces ‘stmt : expr ';'’ and the other reduces ‘stmt :
 decl’, after which both parsers are in an identical state: they’ve seen
 ‘prog stmt’ and have the same unprocessed input remaining.  We say that
-these parses have "merged."
+these parses have “merged.”
 
    At this point, the GLR parser requires a specification in the grammar
 of how to choose between the competing parses.  In the example above,
@@ -1872,7 +1872,7 @@ File: bison.info,  Node: Locations,  Next: Bison Parser,  Prev: GLR Parsers,  Up
 
 Many applications, like interpreters or compilers, have to produce
 verbose and useful error messages.  To achieve this, one must be able to
-keep track of the "textual location", or "location", of each syntactic
+keep track of the “textual location”, or “location”, of each syntactic
 construct.  Bison provides a mechanism for handling these locations.
 
    Each token has a semantic value.  In a similar fashion, each token
@@ -1903,8 +1903,8 @@ File: bison.info,  Node: Bison Parser,  Next: Stages,  Prev: Locations,  Up: Con
 
 When you run Bison, you give it a Bison grammar file as input.  The most
 important output is a C source file that implements a parser for the
-language described by the grammar.  This parser is called a "Bison
-parser", and this file is called a "Bison parser implementation file".
+language described by the grammar.  This parser is called a “Bison
+parser”, and this file is called a “Bison parser implementation file”.
 Keep in mind that the Bison utility and the Bison parser are two
 distinct programs: the Bison utility is a program whose output is the
 Bison parser implementation file that becomes part of your program.
@@ -1914,7 +1914,7 @@ according to the grammar rules—for example, to build identifiers and
 operators into expressions.  As it does this, it runs the actions for
 the grammar rules it uses.
 
-   The tokens come from a function called the "lexical analyzer" that
+   The tokens come from a function called the “lexical analyzer” that
 you must supply in some fashion (such as by writing it in C). The Bison
 parser calls the lexical analyzer each time it wants a new token.  It
 doesn’t know what is “inside” the tokens (though their semantic values
@@ -1992,7 +1992,7 @@ File: bison.info,  Node: Grammar Layout,  Prev: Stages,  Up: Concepts
 1.9 The Overall Layout of a Bison Grammar
 =========================================
 
-The input file for the Bison utility is a "Bison grammar file".  The
+The input file for the Bison utility is a “Bison grammar file”.  The
 general form of a Bison grammar file is as follows:
 
      %{
@@ -2061,8 +2061,8 @@ File: bison.info,  Node: RPN Calc,  Next: Infix Calc,  Up: Examples
 2.1 Reverse Polish Notation Calculator
 ======================================
 
-The first example is that of a simple double-precision "reverse polish
-notation" calculator (a calculator using postfix operators).  This
+The first example is that of a simple double-precision “reverse polish
+notation” calculator (a calculator using postfix operators).  This
 example provides a good starting point, since operator precedence is not
 an issue.  The second example will illustrate how operator precedence is
 handled.
@@ -2087,7 +2087,7 @@ File: bison.info,  Node: Rpcalc Declarations,  Next: Rpcalc Rules,  Up: RPN Calc
 -------------------------------
 
 Here are the C and Bison declarations for the reverse polish notation
-calculator.  As in C, comments are placed between ‘/*…*/’.
+calculator.  As in C, comments are placed between ‘/*...*/’.
 
      /* Reverse polish notation calculator.  */
 
@@ -2201,7 +2201,7 @@ Consider the definition of ‘input’:
    This definition reads as follows: “A complete input is either an
 empty string, or a complete input followed by an input line”.  Notice
 that “complete input” is defined in terms of itself.  This definition is
-said to be "left recursive" since ‘input’ appears always as the leftmost
+said to be “left recursive” since ‘input’ appears always as the leftmost
 symbol in the sequence.  *Note Recursive Rules: Recursion.
 
    The first alternative is empty because there are no symbols between
@@ -2266,7 +2266,7 @@ and so on.
        NUM
      | exp exp '+'     { $$ = $1 + $2;    }
      | exp exp '-'     { $$ = $1 - $2;    }
-     …
+     ...
      ;
 
    We have used ‘|’ to join all the rules for ‘exp’, but we could
@@ -2275,7 +2275,7 @@ equally well have written them separately:
      exp: NUM ;
      exp: exp exp '+'     { $$ = $1 + $2; };
      exp: exp exp '-'     { $$ = $1 - $2; };
-     …
+     ...
 
    Most of the rules have actions that compute the value of the
 expression in terms of the value of its parts.  For example, in the rule
@@ -2294,14 +2294,14 @@ what happens in the first rule (the one that uses ‘NUM’).
 does not require it.  You can add or change white space as much as you
 wish.  For example, this:
 
-     exp: NUM | exp exp '+' {$$ = $1 + $2; } | … ;
+     exp: NUM | exp exp '+' {$$ = $1 + $2; } | ... ;
 
 means the same thing as this:
 
      exp:
        NUM
      | exp exp '+'    { $$ = $1 + $2; }
-     | …
+     | ...
      ;
 
 The latter, however, is much more readable.
@@ -2575,8 +2575,8 @@ File: bison.info,  Node: Simple Error Recovery,  Next: Location Tracking Calc,  
 2.3 Simple Error Recovery
 =========================
 
-Up to this point, this manual has not addressed the issue of "error
-recovery"—how to continue parsing after the parser detects a syntax
+Up to this point, this manual has not addressed the issue of “error
+recovery”—how to continue parsing after the parser detects a syntax
 error.  All we have handled is error reporting with ‘yyerror’.  Recall
 that by default ‘yyparse’ returns after calling ‘yyerror’.  This means
 that an erroneous input line causes the calculator program to exit.  Now
@@ -3225,9 +3225,9 @@ appropriate delimiters:
 
      EPILOGUE
 
-   Comments enclosed in ‘/* … */’ may appear in any of the sections.  As
-a GNU extension, ‘//’ introduces a comment that continues until end of
-line.
+   Comments enclosed in ‘/* ... */’ may appear in any of the sections.
+As a GNU extension, ‘//’ introduces a comment that continues until end
+of line.
 
 * Menu:
 
@@ -3277,7 +3277,7 @@ PROLOGUE blocks, one before and one after the ‘%union’ declaration.
        #define YYPRINT(F, N, L) print_token_value (F, N, L)
      %}
 
-     …
+     ...
 
    When in doubt, it is usually safer to put prologue code before all
 Bison declarations, rather than after.  For example, any definitions of
@@ -3316,7 +3316,7 @@ qualifier can be omitted for the default location, or it can be one of
        #define YYPRINT(F, N, L) print_token_value (F, N, L)
      %}
 
-     …
+     ...
 
 Notice that there are two PROLOGUE sections here, but there’s a subtle
 distinction between their functionality.  For example, if you decide to
@@ -3370,7 +3370,7 @@ PROLOGUE section is not available.  This behavior is not intuitive.
        static void trace_token (enum yytokentype token, YYLTYPE loc);
      }
 
-     …
+     ...
 
 In this way, ‘%code top’ and the unqualified ‘%code’ achieve the same
 functionality as the two kinds of PROLOGUE sections, but it’s always
@@ -3422,7 +3422,7 @@ definitions.  Thus, they belong in one or more ‘%code requires’:
        static void trace_token (enum yytokentype token, YYLTYPE loc);
      }
 
-     …
+     ...
 
 Now Bison will insert ‘#include "ptypes.h"’ and the new ‘YYLTYPE’
 definition before the Bison-generated ‘YYSTYPE’ and ‘YYLTYPE’
@@ -3485,7 +3485,7 @@ unqualified ‘%code’ to a ‘%code provides’:
        #define YYPRINT(F, N, L) print_token_value (F, N, L)
      }
 
-     …
+     ...
 
 Bison will insert the ‘trace_token’ prototype into both the parser
 header file and the parser implementation file after the definitions for
@@ -3552,7 +3552,7 @@ File: bison.info,  Node: Grammar Rules,  Next: Epilogue,  Prev: Bison Declaratio
 3.1.4 The Grammar Rules Section
 -------------------------------
 
-The "grammar rules" section contains one or more Bison grammar rules,
+The “grammar rules” section contains one or more Bison grammar rules,
 and nothing else.  *Note Syntax of Grammar Rules: Rules.
 
    There must always be at least one grammar rule, and the first ‘%%’
@@ -3589,10 +3589,10 @@ File: bison.info,  Node: Symbols,  Next: Rules,  Prev: Grammar Outline,  Up: Gra
 3.2 Symbols, Terminal and Nonterminal
 =====================================
 
-"Symbols" in Bison grammars represent the grammatical classifications of
+“Symbols” in Bison grammars represent the grammatical classifications of
 the language.
 
-   A "terminal symbol" (also known as a "token type") represents a class
+   A “terminal symbol” (also known as a “token type”) represents a class
 of syntactically equivalent tokens.  You use the symbol in grammar rules
 to mean that a token in that class is allowed.  The symbol is
 represented in the Bison parser by a numeric code, and the ‘yylex’
@@ -3600,7 +3600,7 @@ function returns a token type code to indicate what kind of token has
 been read.  You don’t need to know what the code value is; you can use
 the symbol to stand for it.
 
-   A "nonterminal symbol" stands for a class of syntactically equivalent
+   A “nonterminal symbol” stands for a class of syntactically equivalent
 groupings.  The symbol name is used in writing grammar rules.  By
 convention, it should be all lower case.
 
@@ -3615,12 +3615,12 @@ token names.
 
    There are three ways of writing terminal symbols in the grammar:
 
-   • A "named token type" is written with an identifier, like an
+   • A “named token type” is written with an identifier, like an
      identifier in C.  By convention, it should be all upper case.  Each
      such name must be defined with a Bison declaration such as
      ‘%token’.  *Note Token Type Names: Token Decl.
 
-   • A "character token type" (or "literal character token") is written
+   • A “character token type” (or “literal character token”) is written
      in the grammar using the same syntax used in C for character
      constants; for example, ‘'+'’ is a character token type.  A
      character token type doesn’t need to be declared unless you need to
@@ -3642,7 +3642,7 @@ token names.
      meaning in Bison character literals, nor is backslash-newline
      allowed.
 
-   • A "literal string token" is written like a C string constant; for
+   • A “literal string token” is written like a C string constant; for
      example, ‘"<="’ is a literal string token.  A literal string token
      doesn’t need to be declared unless you need to specify its semantic
      value data type (*note Value Type::), associativity, or precedence
@@ -3740,7 +3740,7 @@ File: bison.info,  Node: Rules Syntax,  Next: Empty Rules,  Up: Rules
 
 A Bison grammar rule has the following general form:
 
-     RESULT: COMPONENTS…;
+     RESULT: COMPONENTS...;
 
 where RESULT is the nonterminal symbol that this rule describes, and
 COMPONENTS are various terminal and nonterminal symbols that are put
@@ -3761,7 +3761,7 @@ semantics of the rule.  An action looks like this:
 
      {C STATEMENTS}
 
-This is an example of "braced code", that is, C code surrounded by
+This is an example of “braced code”, that is, C code surrounded by
 braces, much like a compound statement in C.  Braced code can contain
 any sequence of C tokens, so long as its braces are balanced.  Bison
 does not check the braced code for correctness directly; it merely
@@ -3784,9 +3784,9 @@ constants.
 be joined with the vertical-bar character ‘|’ as follows:
 
      RESULT:
-       RULE1-COMPONENTS…
-     | RULE2-COMPONENTS…
-     …
+       RULE1-COMPONENTS...
+     | RULE2-COMPONENTS...
+     ...
      ;
 
 They are still considered distinct rules even when joined in this way.
@@ -3797,7 +3797,7 @@ File: bison.info,  Node: Empty Rules,  Next: Recursion,  Prev: Rules Syntax,  Up
 3.3.2 Empty Rules
 -----------------
 
-A rule is said to be "empty" if its right-hand side (COMPONENTS) is
+A rule is said to be “empty” if its right-hand side (COMPONENTS) is
 empty.  It means that RESULT can match the empty string.  For example,
 here is how to define an optional semicolon:
 
@@ -3831,7 +3831,7 @@ File: bison.info,  Node: Recursion,  Prev: Empty Rules,  Up: Rules
 3.3.3 Recursive Rules
 ---------------------
 
-A rule is called "recursive" when its RESULT nonterminal appears also on
+A rule is called “recursive” when its RESULT nonterminal appears also on
 its right hand side.  Nearly all Bison grammars need to use recursion,
 because that is the only way to define a sequence of any number of a
 particular thing.  Consider this recursive definition of a
@@ -3843,8 +3843,8 @@ comma-separated sequence of one or more expressions:
      ;
 
 Since the recursive use of ‘expseq1’ is the leftmost symbol in the right
-hand side, we call this "left recursion".  By contrast, here the same
-construct is defined using "right recursion":
+hand side, we call this “left recursion”.  By contrast, here the same
+construct is defined using “right recursion”:
 
      expseq1:
        exp
@@ -3859,7 +3859,7 @@ number of elements in the sequence, because all the elements must be
 shifted onto the stack before the rule can be applied even once.  *Note
 The Bison Parser Algorithm: Algorithm, for further explanation of this.
 
-   "Indirect" or "mutual" recursion occurs when the result of the rule
+   “Indirect” or “mutual” recursion occurs when the result of the rule
 does not appear directly on its right hand side, but does appear in
 rules for other nonterminals which do appear on its right hand side.
 
@@ -4142,13 +4142,13 @@ to.
    Here is a typical example:
 
      exp:
-     …
+     ...
      | exp '+' exp     { $$ = $1 + $3; }
 
    Or, in terms of named references:
 
      exp[result]:
-     …
+     ...
      | exp[left] '+' exp[right]  { $result = $left + $right; }
 
 This rule constructs an ‘exp’ from two smaller ‘exp’ groupings connected
@@ -4171,12 +4171,12 @@ is triggered only when ‘b’ is found:
 
      a-or-b: 'a'|'b'   { a_or_b_found = 1; };
 
-   If you don’t specify an action for a rule, Bison supplies a default: ‘$$ = $1’.
-Thus, the value of the first symbol in the rule becomes the value of the
-whole rule.  Of course, the default action is valid only if the two data
-types match.  There is no meaningful default action for an empty rule;
-every empty rule must have an explicit action unless the rule’s value
-does not matter.
+   If you don’t specify an action for a rule, Bison supplies a default:
+‘$$ = $1’.  Thus, the value of the first symbol in the rule becomes the
+value of the whole rule.  Of course, the default action is valid only if
+the two data types match.  There is no meaningful default action for an
+empty rule; every empty rule must have an explicit action unless the
+rule’s value does not matter.
 
    ‘$N’ with N zero or negative is allowed for reference to tokens and
 groupings on the stack _before_ those that match the current rule.  This
@@ -4185,8 +4185,8 @@ the context in which the rule is applied.  Here is a case in which you
 can use this reliably:
 
      foo:
-       expr bar '+' expr  { … }
-     | expr bar '-' expr  { … }
+       expr bar '+' expr  { ... }
+     | expr bar '-' expr  { ... }
      ;
 
      bar:
@@ -4216,7 +4216,7 @@ use ‘$$’ or ‘$N’, its data type is determined by which symbol it refers
 to in the rule.  In this example,
 
      exp:
-       …
+       ...
      | exp '+' exp    { $$ = $1 + $3; }
 
 ‘$1’ and ‘$3’ refer to instances of ‘exp’, so they all have the data
@@ -4272,7 +4272,7 @@ use in ‘$N’.
 set its value with an assignment to ‘$$’, and actions later in the rule
 can refer to the value using ‘$N’.  Since there is no symbol to name the
 action, there is no way to declare a data type for the value in advance,
-so you must use the ‘$<…>N’ construct to specify a data type each time
+so you must use the ‘$<...>N’ construct to specify a data type each time
 you refer to this value.
 
    There is no way to set the value of the entire rule with a mid-rule
@@ -4445,7 +4445,7 @@ Now the parser is forced to decide whether to run the mid-rule action
 when it has read no farther than the open-brace.  In other words, it
 must commit to using one rule or the other, without sufficient
 information to do it correctly.  (The open-brace token is what is called
-the "lookahead" token at this time, since the parser is still deciding
+the “lookahead” token at this time, since the parser is still deciding
 what to do about it.  *Note Lookahead Tokens: Lookahead.)
 
    You might think that you could correct the problem by putting
@@ -4559,7 +4559,7 @@ for more information about using the named references construct.
    Here is a basic example using the default data type for locations:
 
      exp:
-       …
+       ...
      | exp '/' exp
          {
            @$.first_column = @1.first_column;
@@ -4586,7 +4586,7 @@ last symbol.
 automatic.  The example above simply rewrites this way:
 
      exp:
-       …
+       ...
      | exp '/' exp
          {
            if ($3)
@@ -4679,14 +4679,14 @@ File: bison.info,  Node: Named References,  Next: Declarations,  Prev: Tracking 
 ====================
 
 As described in the preceding sections, the traditional way to refer to
-any semantic value or location is a "positional reference", which takes
+any semantic value or location is a “positional reference”, which takes
 the form ‘$N’, ‘$$’, ‘@N’, and ‘@$’.  However, such a reference is not
 very descriptive.  Moreover, if you later decide to insert or remove
 symbols in the right-hand side of a grammar rule, the need to renumber
 such references can be tedious and error-prone.
 
    To avoid these issues, you can also refer to a semantic value or
-location using a "named reference".  First of all, original symbol names
+location using a “named reference”.  First of all, original symbol names
 may be used as named references.  For example:
 
      invocation: op '(' args ')'
@@ -4721,6 +4721,7 @@ closing brace of the mid-rule action code:
      exp[res]: exp[x] '+' {$left = $x;}[left] exp[right]
        { $res = $left + $right; }
 
+
    In references, in order to specify names containing dots and dashes,
 an explicit bracketed syntax ‘$[name]’ and ‘@[name]’ must be used:
      if-stmt: "if" '(' expr ')' "then" then.stmt ';'
@@ -4743,7 +4744,7 @@ File: bison.info,  Node: Declarations,  Next: Multiple Parsers,  Prev: Named Ref
 3.7 Bison Declarations
 ======================
 
-The "Bison declarations" section of a Bison grammar defines the symbols
+The “Bison declarations” section of a Bison grammar defines the symbols
 used in formulating the grammar and the data types of semantic values.
 *Note Symbols::.
 
@@ -4863,17 +4864,17 @@ File: bison.info,  Node: Precedence Decl,  Next: Type Decl,  Prev: Token Decl,  
 
 Use the ‘%left’, ‘%right’, ‘%nonassoc’, or ‘%precedence’ declaration to
 declare a token and specify its precedence and associativity, all at
-once.  These are called "precedence declarations".  *Note Operator
+once.  These are called “precedence declarations”.  *Note Operator
 Precedence: Precedence, for general information on operator precedence.
 
    The syntax of a precedence declaration is nearly the same as that of
 ‘%token’: either
 
-     %left SYMBOLS…
+     %left SYMBOLS...
 
 or
 
-     %left <TYPE> SYMBOLS…
+     %left <TYPE> SYMBOLS...
 
    And indeed any of these declarations serves the purposes of ‘%token’.
 But in addition, they specify the associativity and relative precedence
@@ -4917,7 +4918,7 @@ When you use ‘%union’ to specify multiple value types, you must declare
 the value type of each nonterminal symbol for which values are used.
 This is done with a ‘%type’ declaration, like this:
 
-     %type <TYPE> NONTERMINAL…
+     %type <TYPE> NONTERMINAL...
 
 Here NONTERMINAL is the name of a nonterminal symbol, and TYPE is the
 name given in the ‘%union’ to the alternative that you want (*note The
@@ -5049,7 +5050,7 @@ parser will invoke the ‘<>’ ‘%destructor’ whenever it discards the
 mid-rule symbol.
 
 
-   "Discarded symbols" are the following:
+   “Discarded symbols” are the following:
 
    • stacked symbols popped during the first phase of error recovery,
    • incoming terminals during the second phase of error recovery,
@@ -5060,7 +5061,7 @@ mid-rule symbol.
      an exception in ‘parse’,
    • the start symbol, when the parser succeeds.
 
-   The parser can "return immediately" because of an explicit call to
+   The parser can “return immediately” because of an explicit call to
 ‘YYABORT’ or ‘YYACCEPT’, or failed error recovery, or memory exhaustion.
 
    Right-hand side symbols of a rule that explicitly triggers a syntax
@@ -5188,8 +5189,8 @@ File: bison.info,  Node: Pure Decl,  Next: Push Decl,  Prev: Start Decl,  Up: De
 3.7.10 A Pure (Reentrant) Parser
 --------------------------------
 
-A "reentrant" program is one which does not alter in the course of
-execution; in other words, it consists entirely of "pure" (read-only)
+A “reentrant” program is one which does not alter in the course of
+execution; in other words, it consists entirely of “pure” (read-only)
 code.  Reentrancy is important whenever asynchronous execution is
 possible; for example, a nonreentrant program may not be safe to call
 from a signal handler.  In systems with multiple threads of control, a
@@ -5820,9 +5821,9 @@ VARIABLEs are described below.
                     %token <u.sval> STR "string"
 
         • Default Value:
-             − ‘union-directive’ if ‘%union’ is used, otherwise …
-             − ‘int’ if type tags are used (i.e., ‘%token <TYPE>…’ or
-               ‘%type <TYPE>…’ is used), otherwise …
+             − ‘union-directive’ if ‘%union’ is used, otherwise ...
+             − ‘int’ if type tags are used (i.e., ‘%token <TYPE>...’ or
+               ‘%type <TYPE>...’ is used), otherwise ...
              − undefined.
 
         • History: introduced in Bison 3.0.  Was introduced for Java
@@ -6070,7 +6071,7 @@ all the macros to start by PREFIX (i.e., PREFIX upper-cased) instead of
 more about this below.
 
    For example, if you use ‘%define api.prefix {c}’, the names become
-‘cparse’, ‘clex’, …, ‘CSTYPE’, ‘CLTYPE’, and so on.
+‘cparse’, ‘clex’, ..., ‘CSTYPE’, ‘CLTYPE’, and so on.
 
    The ‘%define’ variable ‘api.prefix’ works in two different ways.  In
 the implementation file, it works by adding macro definitions to the
@@ -6086,7 +6087,7 @@ beginning of the parser implementation file, defining ‘yyparse’ as
 
    This effectively substitutes one name for the other in the entire
 parser implementation file, thus the “original” names (‘yylex’,
-‘YYSTYPE’, …) are also usable in the parser implementation file.
+‘YYSTYPE’, ...) are also usable in the parser implementation file.
 
    However, in the parser header file, the symbols are defined renamed,
 for instance:
@@ -6184,7 +6185,7 @@ these macros:
 parameter information to it in a reentrant way.  To do so, use the
 declaration ‘%parse-param’:
 
- -- Directive: %parse-param {ARGUMENT-DECLARATION} …
+ -- Directive: %parse-param {ARGUMENT-DECLARATION} ...
      Declare that one or more ARGUMENT-DECLARATION are additional
      ‘yyparse’ arguments.  The ARGUMENT-DECLARATION is used when
      declaring functions or prototypes.  The last identifier in
@@ -6198,14 +6199,14 @@ Then call the parser like this:
 
      {
        int nastiness, randomness;
-       …  /* Store proper data in ‘nastiness’ and ‘randomness’.  */
+       ...  /* Store proper data in ‘nastiness’ and ‘randomness’.  */
        value = yyparse (&nastiness, &randomness);
-       …
+       ...
      }
 
 In the grammar actions, use expressions like this to refer to the data:
 
-     exp: …    { …; *randomness += 1; … }
+     exp: ...    { ...; *randomness += 1; ... }
 
 Using the following:
      %parse-param {int *randomness}
@@ -6299,7 +6300,7 @@ File: bison.info,  Node: Lexical,  Next: Error Reporting,  Prev: Parser Delete F
 4.6 The Lexical Analyzer Function ‘yylex’
 =========================================
 
-The "lexical analyzer" function, ‘yylex’, recognizes tokens from the
+The “lexical analyzer” function, ‘yylex’, recognizes tokens from the
 input stream and returns them to the parser.  Bison does not create this
 function automatically; you must write it so that ‘yyparse’ can call it.
 The function is sometimes referred to as a lexical scanner.
@@ -6350,15 +6351,15 @@ signifies end-of-input.
      int
      yylex (void)
      {
-       …
+       ...
        if (c == EOF)    /* Detect end-of-input.  */
          return 0;
-       …
+       ...
        if (c == '+' || c == '-')
          return c;      /* Assume token type for '+' is '+'.  */
-       …
+       ...
        return INT;      /* Return the type of the token.  */
-       …
+       ...
      }
 
 This interface has been designed so that the output from the ‘lex’
@@ -6409,10 +6410,10 @@ must be stored into the global variable ‘yylval’.  When you are using
 just one data type for semantic values, ‘yylval’ has that type.  Thus,
 if the type is ‘int’ (the default), you might write this in ‘yylex’:
 
-       …
+       ...
        yylval = value;  /* Put value onto Bison stack.  */
        return INT;      /* Return the type of the token.  */
-       …
+       ...
 
    When you are using multiple data types, ‘yylval’’s type is a union
 made from the ‘%union’ declaration (*note The Union Declaration: Union
@@ -6427,10 +6428,10 @@ member of the union.  If the ‘%union’ declaration looks like this:
 
 then the code in ‘yylex’ might look like this:
 
-       …
+       ...
        yylval.intval = value; /* Put value onto Bison stack.  */
        return INT;            /* Return the type of the token.  */
-       …
+       ...
 
 
 File: bison.info,  Node: Token Locations,  Next: Pure Calling,  Prev: Token Values,  Up: Lexical
@@ -6469,10 +6470,10 @@ the information back by storing it through those pointers.
      int
      yylex (YYSTYPE *lvalp, YYLTYPE *llocp)
      {
-       …
+       ...
        *lvalp = value;  /* Put value onto Bison stack.  */
        return INT;      /* Return the type of the token.  */
-       …
+       ...
      }
 
    If the grammar file does not use the ‘@’ constructs to refer to
@@ -6484,17 +6485,17 @@ argument.
 just like ‘%parse-param’ (*note Parser Function::).  To pass additional
 arguments to both ‘yylex’ and ‘yyparse’, use ‘%param’.
 
- -- Directive: %lex-param {ARGUMENT-DECLARATION} …
+ -- Directive: %lex-param {ARGUMENT-DECLARATION} ...
      Specify that ARGUMENT-DECLARATION are additional ‘yylex’ argument
      declarations.  You may pass one or more such declarations, which is
      equivalent to repeating ‘%lex-param’.
 
- -- Directive: %param {ARGUMENT-DECLARATION} …
+ -- Directive: %param {ARGUMENT-DECLARATION} ...
      Specify that ARGUMENT-DECLARATION are additional ‘yylex’/‘yyparse’
      argument declaration.  This is equivalent to ‘%lex-param
-     {ARGUMENT-DECLARATION} … %parse-param {ARGUMENT-DECLARATION} …’.
-     You may pass one or more declarations, which is equivalent to
-     repeating ‘%param’.
+     {ARGUMENT-DECLARATION} ... %parse-param {ARGUMENT-DECLARATION}
+     ...’.  You may pass one or more declarations, which is equivalent
+     to repeating ‘%param’.
 
 For instance:
 
@@ -6524,7 +6525,7 @@ File: bison.info,  Node: Error Reporting,  Next: Action Features,  Prev: Lexical
 4.7 The Error Reporting Function ‘yyerror’
 ==========================================
 
-The Bison parser detects a "syntax error" (or "parse error") whenever it
+The Bison parser detects a “syntax error” (or “parse error”) whenever it
 reads a token which cannot satisfy any syntax rule.  An action in the
 grammar can also explicitly proclaim an error, using the macro ‘YYERROR’
 (*note Special Features for Use in Actions: Action Features.).
@@ -6602,16 +6603,16 @@ useful in actions.
      Acts like a variable that contains the semantic value for the
      grouping made by the current rule.  *Note Actions::.
 
- -- Variable: $ N
+ -- Variable: $N
      Acts like a variable that contains the semantic value for the Nth
      component of the current rule.  *Note Actions::.
 
- -- Variable: $< TYPEALT>$
+ -- Variable: $<TYPEALT>$
      Like ‘$$’ but specifies alternative TYPEALT in the union specified
      by the ‘%union’ declaration.  *Note Data Types of Values in
      Actions: Action Types.
 
- -- Variable: $< TYPEALT>N
+ -- Variable: $<TYPEALT>N
      Like ‘$N’ but specifies alternative TYPEALT in the union specified
      by the ‘%union’ declaration.  *Note Data Types of Values in
      Actions: Action Types.
@@ -6686,12 +6687,12 @@ useful in actions.
      ‘yylval’ in a deferred semantic action (*note GLR Semantic
      Actions::).  *Note Actions: Actions.
 
- -- Value: @ $
+ -- Value: @$
      Acts like a structure variable containing information on the
      textual location of the grouping made by the current rule.  *Note
      Tracking Locations::.
 
- -- Value: @ N
+ -- Value: @N
      Acts like a structure variable containing information on the
      textual location of the Nth component of the current rule.  *Note
      Tracking Locations::.
@@ -6761,8 +6762,8 @@ File: bison.info,  Node: Algorithm,  Next: Error Recovery,  Prev: Interface,  Up
 ****************************
 
 As Bison reads tokens, it pushes them onto a stack along with their
-semantic values.  The stack is called the "parser stack".  Pushing a
-token is traditionally called "shifting".
+semantic values.  The stack is called the “parser stack”.  Pushing a
+token is traditionally called “shifting”.
 
    For example, suppose the infix calculator has read ‘1 + 5 *’, with a
 ‘3’ to come.  The stack will have four elements, one for each token that
@@ -6771,7 +6772,7 @@ was shifted.
    But the stack does not always have an element for each token read.
 When the last N tokens and groupings shifted match the components of a
 grammar rule, they can be combined according to that rule.  This is
-called "reduction".  Those tokens and groupings are replaced on the
+called “reduction”.  Those tokens and groupings are replaced on the
 stack by a single grouping whose symbol is the result (left hand side)
 of that rule.  Running the rule’s action is part of the process of
 reduction, because this is what computes the semantic value of the
@@ -6826,7 +6827,7 @@ reduction is possible, the parser sometimes “looks ahead” at the next
 token in order to decide what to do.
 
    When a token is read, it is not immediately shifted; first it becomes
-the "lookahead token", which is not on the stack.  Now the parser can
+the “lookahead token”, which is not on the stack.  Now the parser can
 perform one or more reductions of tokens and groupings on the stack,
 while the lookahead token remains off to the side.  When no more
 reductions should take place, the lookahead token is shifted onto the
@@ -6890,7 +6891,7 @@ reduction by the first rule.  But it is also legitimate to shift the
 rule.
 
    This situation, where either a shift or a reduction would be valid,
-is called a "shift/reduce conflict".  Bison is designed to resolve these
+is called a “shift/reduce conflict”.  Bison is designed to resolve these
 conflicts by choosing to shift, unless otherwise directed by operator
 precedence declarations.  To see the reason for this, let’s contrast it
 with the other alternative.
@@ -6986,7 +6987,7 @@ input ‘1 - 2 * 3’ can be parsed in two different ways):
      | expr '*' expr
      | expr '<' expr
      | '(' expr ')'
-     …
+     ...
      ;
 
 Suppose the parser has seen the tokens ‘1’, ‘-’ and ‘2’; should it
@@ -7008,8 +7009,8 @@ first, but not ‘<’.
 
    What about input such as ‘1 - 2 - 5’; should this be ‘(1 - 2) - 5’ or
 should it be ‘1 - (2 - 5)’?  For most operators we prefer the former,
-which is called "left association".  The latter alternative, "right
-association", is desirable for assignment operators.  The choice of left
+which is called “left association”.  The latter alternative, “right
+association”, is desirable for assignment operators.  The choice of left
 or right association is a matter of whether the parser chooses to shift
 or reduce when the stack contains ‘1 - 2’ and the lookahead token is
 ‘-’: shifting makes right-associativity.
@@ -7079,7 +7080,7 @@ usually over-specified, see *note Infix Notation Calculator - ‘calc’:
 Infix Calc.  The ‘%left’ directive is traditionally used to declare the
 precedence of ‘NEG’, which is more than needed since it also defines its
 associativity.  While this is harmless in the traditional example, who
-knows how ‘NEG’ might be used in future evolutions of the grammar…
+knows how ‘NEG’ might be used in future evolutions of the grammar...
 
 
 File: bison.info,  Node: Precedence Examples,  Next: How Precedence,  Prev: Precedence Only,  Up: Precedence
@@ -7195,7 +7196,7 @@ declare a precedence for a fictitious terminal symbol named ‘UMINUS’.
 There are no tokens of this type, but the symbol serves to stand for its
 precedence:
 
-     …
+     ...
      %left '+' '-'
      %left '*'
      %left UMINUS
@@ -7203,9 +7204,9 @@ precedence:
    Now the precedence of ‘UMINUS’ can be used in specific rules:
 
      exp:
-       …
+       ...
      | exp '-' exp
-       …
+       ...
      | '-' exp %prec UMINUS
 
 
@@ -7445,7 +7446,7 @@ that are being confused, and adding something to make them look
 distinct.  In the above example, adding one rule to ‘return_spec’ as
 follows makes the problem go away:
 
-     …
+     ...
      return_spec:
        type
      | name ':' type
@@ -7639,17 +7640,17 @@ After parser table construction, Bison identifies the reduction with the
 largest lookahead set in each parser state.  To reduce the size of the
 parser state, traditional Bison behavior is to remove that lookahead set
 and to assign that reduction to be the default parser action.  Such a
-reduction is known as a "default reduction".
+reduction is known as a “default reduction”.
 
    Default reductions affect more than the size of the parser tables.
 They also affect the behavior of the parser:
 
    • Delayed ‘yylex’ invocations.
 
-     A "consistent state" is a state that has only one possible parser
+     A “consistent state” is a state that has only one possible parser
      action.  If that action is a reduction and is encoded as a default
-     reduction, then that consistent state is called a "defaulted
-     state".  Upon reaching a defaulted state, a Bison-generated parser
+     reduction, then that consistent state is called a “defaulted
+     state”.  Upon reaching a defaulted state, a Bison-generated parser
      does not bother to invoke ‘yylex’ to fetch the next token before
      performing the reduction.  In other words, whether default
      reductions are enabled in consistent states determines how soon a
@@ -7835,7 +7836,7 @@ File: bison.info,  Node: Unreachable States,  Prev: LAC,  Up: Tuning LR
 ------------------------
 
 If there exists no sequence of transitions from the parser’s start state
-to some state S, then Bison considers S to be an "unreachable state".  A
+to some state S, then Bison considers S to be an “unreachable state”.  A
 state can become unreachable during conflict resolution if Bison
 disables a shift action leading to it from a predecessor state.
 
@@ -8068,7 +8069,7 @@ another, spurious error message:
      primary:
        '(' expr ')'
      | '(' error ')'
-     …
+     ...
      ;
 
    Error recovery strategies are necessarily guesses.  When they guess
@@ -8118,7 +8119,7 @@ File: bison.info,  Node: Context Dependency,  Next: Debugging,  Prev: Error Reco
 The Bison paradigm is to parse tokens first, then group them into larger
 syntactic units.  In many languages, the meaning of a token is affected
 by its context.  Although this violates the Bison paradigm, certain
-techniques (known as "kludges") may enable you to write Bison parsers
+techniques (known as “kludges”) may enable you to write Bison parsers
 for such languages.
 
 * Menu:
@@ -8211,7 +8212,7 @@ File: bison.info,  Node: Lexical Tie-ins,  Next: Tie-in Recovery,  Prev: Semanti
 7.2 Lexical Tie-ins
 ===================
 
-One way to handle context-dependency is the "lexical tie-in": a flag
+One way to handle context-dependency is the “lexical tie-in”: a flag
 which is set by Bison actions, whose purpose is to alter the way tokens
 are parsed.
 
@@ -8227,14 +8228,14 @@ an identifier if it appears in that context.  Here is how you can do it:
        void yyerror (char const *);
      %}
      %%
-     …
+     ...
      expr:
        IDENTIFIER
      | constant
      | HEX '('        { hexflag = 1; }
          expr ')'     { hexflag = 0; $$ = $4; }
      | expr '+' expr  { $$ = make_sum ($1, $3); }
-     …
+     ...
      ;
 
      constant:
@@ -8267,8 +8268,8 @@ statement, like this:
 
      stmt:
        expr ';'
-     | IF '(' expr ')' stmt { … }
-     …
+     | IF '(' expr ')' stmt { ... }
+     ...
      | error ';'  { hexflag = 0; }
      ;
 
@@ -8286,10 +8287,10 @@ expressions.  For example, there could be a rule which applies within
 parentheses and skips to the close-parenthesis:
 
      expr:
-       …
+       ...
      | '(' expr ')'   { $$ = $2; }
      | '(' error ')'
-     …
+     ...
 
    If this rule acts within the ‘hex’ construct, it is not going to
 abort that construct (since it applies to an inner level of parentheses
@@ -8343,7 +8344,7 @@ File: bison.info,  Node: Understanding,  Next: Graphviz,  Up: Debugging
 =============================
 
 As documented elsewhere (*note The Bison Parser Algorithm: Algorithm.)
-Bison parsers are "shift/reduce automata".  In some cases (much more
+Bison parsers are “shift/reduce automata”.  In some cases (much more
 frequent than one would hope), looking at this automaton is required to
 tune or simply fix a parser.
 
@@ -8438,7 +8439,7 @@ and reports the uses of the symbols:
          on left: 1 2 3 4 5, on right: 0 1 2 3 4
 
 Bison then proceeds onto the automaton itself, describing each state
-with its set of "items", also known as "pointed rules".  Each item is a
+with its set of “items”, also known as “pointed rules”.  Each item is a
 production rule together with a point (‘.’) marking the location of the
 input cursor.
 
@@ -8462,7 +8463,7 @@ triggers a syntax error.”
    Even though the only active rule in state 0 seems to be rule 0, the
 report lists ‘NUM’ as a lookahead token because ‘NUM’ can be at the
 beginning of any rule deriving an ‘exp’.  By default Bison reports the
-so-called "core" or "kernel" of the item set, but if you want to see
+so-called “core” or “kernel” of the item set, but if you want to see
 more detail you can invoke ‘bison’ with ‘--report=itemset’ to list the
 derived items as well:
 
@@ -8479,7 +8480,7 @@ derived items as well:
 
          exp  go to state 2
 
-In the state 1…
+In the state 1...
 
      State 1
 
@@ -8512,7 +8513,7 @@ shifted onto the parse stack, and the automaton jumps to state 4,
 corresponding to the item ‘exp: exp '+' . exp’.  Since there is no
 default action, any lookahead not listed triggers a syntax error.
 
-   The state 3 is named the "final state", or the "accepting state":
+   The state 3 is named the “final state”, or the “accepting state”:
 
      State 3
 
@@ -9123,7 +9124,7 @@ calculator (*note Declarations for ‘mfcalc’: Mfcalc Declarations.):
          print_token_value (File, Type, Value)
      %}
 
-     … %% … %% …
+     ... %% ... %% ...
 
      static void
      print_token_value (FILE *file, int type, YYSTYPE value)
@@ -10144,9 +10145,9 @@ semantic value for a string.
    So for each token type, Bison generates named constructors as
 follows.
 
- -- Method on symbol_type: make_ TOKEN (const VALUE_TYPE& VALUE, const
+ -- Method on symbol_type: make_TOKEN (const VALUE_TYPE& VALUE, const
           location_type& LOCATION)
- -- Method on symbol_type: make_ TOKEN (const location_type& LOCATION)
+ -- Method on symbol_type: make_TOKEN (const location_type& LOCATION)
      Build a complete terminal symbol for the token type TOKEN (not
      including the ‘api.token.prefix’) whose possible semantic value is
      VALUE of adequate VALUE_TYPE.  If location tracking is enabled,
@@ -10185,7 +10186,7 @@ File: bison.info,  Node: A Complete C++ Example,  Prev: C++ Scanner Interface,  
 
 This section demonstrates the use of a C++ parser with a simple but
 complete example.  This example should be available on your system,
-ready to compile, in the directory ".../bison/examples/calc++".  It
+ready to compile, in the directory “.../bison/examples/calc++”.  It
 focuses on the use of Bison, therefore the design of the various C++
 classes is very naive: no accessors, no encapsulation of members etc.
 We will use a Lex scanner, and more precisely, a Flex scanner, to
@@ -10226,7 +10227,7 @@ technique of the “parsing context” is convenient: a structure containing
 all the data to exchange.  Since, in addition to simply launch the
 parsing, there are several auxiliary tasks to execute (open the file for
 parsing, instantiate the parser etc.), we recommend transforming the
-simple parsing context structure into a fully blown "parsing driver"
+simple parsing context structure into a fully blown “parsing driver”
 class.
 
    The declaration of this driver class, ‘calc++-driver.hh’, is as
@@ -10722,8 +10723,8 @@ File: bison.info,  Node: Java Location Values,  Next: Java Parser Interface,  Pr
 
 When the directive ‘%locations’ is used, the Java parser supports
 location tracking, see *note Tracking Locations::.  An auxiliary
-user-defined class defines a "position", a single point in a file; Bison
-itself defines a class representing a "location", a range composed of a
+user-defined class defines a “position”, a single point in a file; Bison
+itself defines a class representing a “location”, a range composed of a
 pair of positions (possibly spanning several files).  The location class
 is an inner class of the parser; the name is ‘Location’ by default, and
 may also be renamed using ‘%define api.location.type {CLASS-NAME}’.
@@ -10787,7 +10788,7 @@ Each occurrence of the directive will add a ‘protected final’ field to
 the parser class, and an argument to its constructor, which initialize
 them automatically.
 
- -- Constructor on YYParser: YYParser (LEX_PARAM, …, PARSE_PARAM, …)
+ -- Constructor on YYParser: YYParser (LEX_PARAM, ..., PARSE_PARAM, ...)
      Build a new parser object with embedded ‘%code lexer’.  There are
      no parameters, unless ‘%param’s and/or ‘%parse-param’s and/or
      ‘%lex-param’s are used.
@@ -10796,7 +10797,7 @@ them automatically.
      body.  This is especially useful to initialize superclasses.  Use
      ‘%define init_throws’ to specify any uncaught exceptions.
 
- -- Constructor on YYParser: YYParser (Lexer LEXER, PARSE_PARAM, …)
+ -- Constructor on YYParser: YYParser (Lexer LEXER, PARSE_PARAM, ...)
      Build a new parser object using the specified scanner.  There are
      no additional parameters unless ‘%param’s and/or ‘%parse-param’s
      are used.
@@ -10911,11 +10912,11 @@ analogous C action features are currently unavailable for Java.
    Use ‘%define throws’ to specify any uncaught exceptions from parser
 actions, and initial actions specified by ‘%initial-action’.
 
- -- Variable: $ N
+ -- Variable: $N
      The semantic value for the Nth component of the current rule.  This
      may not be assigned to.  *Note Java Semantic Values::.
 
- -- Variable: $< TYPEALT>N
+ -- Variable: $<TYPEALT>N
      Like ‘$N’ but specifies a alternative type TYPEALT.  *Note Java
      Semantic Values::.
 
@@ -10927,17 +10928,17 @@ actions, and initial actions specified by ‘%initial-action’.
      assignments.  Use an explicit Java cast if the correct subtype is
      needed.  *Note Java Semantic Values::.
 
- -- Variable: $< TYPEALT>$
+ -- Variable: $<TYPEALT>$
      Same as ‘$$’ since Java always allow assigning to the base type.
      Perhaps we should use this and ‘$<>$’ for the value and ‘$$’ for
      setting the value but there is currently no easy way to distinguish
      these constructs.  *Note Java Semantic Values::.
 
- -- Variable: @ N
+ -- Variable: @N
      The location information of the Nth component of the current rule.
      This may not be assigned to.  *Note Java Location Values::.
 
- -- Variable: @ $
+ -- Variable: @$
      The location information of the grouping made by the current rule.
      *Note Java Location Values::.
 
@@ -11079,7 +11080,7 @@ section summarizes these differences.
           Scanner Interface::).
 
      Other ‘%code’ blocks are not supported in Java parsers.  In
-     particular, ‘%{ … %}’ blocks should not be used and may give an
+     particular, ‘%{ ... %}’ blocks should not be used and may give an
      error in future versions of Bison.
 
      The epilogue has the same meaning as in C/C++ code and it can be
@@ -11120,35 +11121,35 @@ meaning when used in a Java parser.
      constructor(s) and as fields initialized by the constructor(s).
      Default is none.  *Note Java Parser Interface::.
 
- -- Directive: %token <TYPE> TOKEN …
+ -- Directive: %token <TYPE> TOKEN ...
      Declare tokens.  Note that the angle brackets enclose a Java
      _type_.  *Note Java Semantic Values::.
 
- -- Directive: %type <TYPE> NONTERMINAL …
+ -- Directive: %type <TYPE> NONTERMINAL ...
      Declare the type of nonterminals.  Note that the angle brackets
      enclose a Java _type_.  *Note Java Semantic Values::.
 
- -- Directive: %code { CODE … }
+ -- Directive: %code { CODE ... }
      Code appended to the inside of the parser class.  *Note Java
      Differences::.
 
- -- Directive: %code imports { CODE … }
+ -- Directive: %code imports { CODE ... }
      Code inserted just after the ‘package’ declaration.  *Note Java
      Differences::.
 
- -- Directive: %code init { CODE … }
+ -- Directive: %code init { CODE ... }
      Code inserted at the beginning of the parser constructor body.
      *Note Java Parser Interface::.
 
- -- Directive: %code lexer { CODE … }
+ -- Directive: %code lexer { CODE ... }
      Code added to the body of a inner lexer class within the parser
      class.  *Note Java Scanner Interface::.
 
- -- Directive: %% CODE …
+ -- Directive: %% CODE ...
      Code (after the second ‘%%’) appended to the end of the file,
      _outside_ the parser class.  *Note Java Differences::.
 
- -- Directive: % { CODE … %}
+ -- Directive: %{ CODE ... %}
      Not supported.  Use ‘%code imports’ instead.  *Note Java
      Differences::.
 
@@ -11409,7 +11410,7 @@ instructions one after the others.
 
    If you want a richer model, you will probably need to use the parser
 to construct a tree that does represent the structure it has recovered;
-this tree is usually called the "abstract syntax tree", or "AST" for
+this tree is usually called the “abstract syntax tree”, or “AST” for
 short.  Then, walking through this tree, traversing it in various ways,
 will enable treatments such as its execution or its translation, which
 will result in an interpreter or a compiler.
@@ -11591,12 +11592,12 @@ File: bison.info,  Node: Table of Symbols,  Next: Glossary,  Prev: FAQ,  Up: Top
 Appendix A Bison Symbols
 ************************
 
- -- Variable: @ $
+ -- Variable: @$
      In an action, the location of the left-hand side of the rule.
      *Note Tracking Locations::.
 
- -- Variable: @ N
- -- Symbol: @ N
+ -- Variable: @N
+ -- Symbol: @N
      In an action, the location of the N-th symbol of the right-hand
      side of the rule.  *Note Tracking Locations::.
 
@@ -11604,12 +11605,12 @@ Appendix A Bison Symbols
      action with a semantical value.  *Note Mid-Rule Action
      Translation::.
 
- -- Variable: @ NAME
- -- Variable: @ [NAME]
+ -- Variable: @NAME
+ -- Variable: @[NAME]
      In an action, the location of a symbol addressed by NAME.  *Note
      Tracking Locations::.
 
- -- Symbol: $ @N
+ -- Symbol: $@N
      In a grammar, the Bison-generated nonterminal symbol for a mid-rule
      action with no semantical value.  *Note Mid-Rule Action
      Translation::.
@@ -11618,12 +11619,12 @@ Appendix A Bison Symbols
      In an action, the semantic value of the left-hand side of the rule.
      *Note Actions::.
 
- -- Variable: $ N
+ -- Variable: $N
      In an action, the semantic value of the N-th symbol of the
      right-hand side of the rule.  *Note Actions::.
 
- -- Variable: $ NAME
- -- Variable: $[ NAME]
+ -- Variable: $NAME
+ -- Variable: $[NAME]
      In an action, the semantic value of a symbol addressed by NAME.
      *Note Actions::.
 
@@ -11632,12 +11633,12 @@ Appendix A Bison Symbols
      declarations section or the epilogue.  *Note The Overall Layout of
      a Bison Grammar: Grammar Layout.
 
- -- Delimiter: % {CODE%}
+ -- Delimiter: %{CODE%}
      All code listed between ‘%{’ and ‘%}’ is copied verbatim to the
      parser implementation file.  Such code forms the prologue of the
      grammar file.  *Note Outline of a Bison Grammar: Grammar Outline.
 
- -- Directive: %? {EXPRESSION}
+ -- Directive: %?{EXPRESSION}
      Predicate actions.  This is a type of action clause that may appear
      in rules.  The expression is evaluated, and if false, causes a
      syntax error.  In GLR parsers during nondeterministic operation,
@@ -11648,8 +11649,8 @@ Appendix A Bison Symbols
      This feature is experimental.  More user feedback will help to
      determine whether it should become a permanent feature.
 
- -- Construct: /* … */
- -- Construct: // …
+ -- Construct: /* ... */
+ -- Construct: // ...
      Comments, as in C/C++.
 
  -- Delimiter: :
@@ -11762,7 +11763,7 @@ Appendix A Bison Symbols
      Bison declaration to assign precedence and left associativity to
      token(s).  *Note Operator Precedence: Precedence Decl.
 
- -- Directive: %lex-param {ARGUMENT-DECLARATION} …
+ -- Directive: %lex-param {ARGUMENT-DECLARATION} ...
      Bison declaration to specifying additional arguments that ‘yylex’
      should accept.  *Note Calling Conventions for Pure Parsers: Pure
      Calling.
@@ -11802,12 +11803,12 @@ Appendix A Bison Symbols
      Bison declaration to set the name of the parser implementation
      file.  *Note Decl Summary::.
 
- -- Directive: %param {ARGUMENT-DECLARATION} …
+ -- Directive: %param {ARGUMENT-DECLARATION} ...
      Bison declaration to specify additional arguments that both ‘yylex’
      and ‘yyparse’ should accept.  *Note The Parser Function ‘yyparse’:
      Parser Function.
 
- -- Directive: %parse-param {ARGUMENT-DECLARATION} …
+ -- Directive: %parse-param {ARGUMENT-DECLARATION} ...
      Bison declaration to specify additional arguments that ‘yyparse’
      should accept.  *Note The Parser Function ‘yyparse’: Parser
      Function.
@@ -12276,7 +12277,7 @@ Appendix C Copying This Manual
   0. PREAMBLE
 
      The purpose of this License is to make a manual, textbook, or other
-     functional and useful document "free" in the sense of freedom: to
+     functional and useful document “free” in the sense of freedom: to
      assure everyone the effective freedom to copy and redistribute it,
      with or without modifying it, either commercially or
      noncommercially.  Secondarily, this License preserves for the
@@ -12726,7 +12727,7 @@ notices just after the title page:
        Free Documentation License''.
 
    If you have Invariant Sections, Front-Cover Texts and Back-Cover
-Texts, replace the “with…Texts.” line with this:
+Texts, replace the “with...Texts.” line with this:
 
          with the Invariant Sections being LIST THEIR TITLES, with
          the Front-Cover Texts being LIST, and with the Back-Cover Texts
@@ -12795,40 +12796,37 @@ Index of Terms
  [index ]
 * Menu:
 
-* $:                                     Java Action Features.
-                                                              (line  12)
-* $ <1>:                                 Action Features.     (line  13)
-* $ <2>:                                 Table of Symbols.    (line  24)
-* $ <3>:                                 Table of Symbols.    (line  33)
-* $ <4>:                                 Table of Symbols.    (line  37)
 * $$:                                    Actions.             (line   6)
 * $$ <1>:                                Java Action Features.
                                                               (line  20)
 * $$ <2>:                                Action Features.     (line   9)
 * $$ <3>:                                Table of Symbols.    (line  29)
-* $<:                                    Java Action Features.
-                                                              (line  16)
-* $< <1>:                                Java Action Features.
+* $<TYPEALT>$:                           Java Action Features.
                                                               (line  28)
-* $< <2>:                                Action Features.     (line  17)
-* $< <3>:                                Action Features.     (line  22)
+* $<TYPEALT>$ <1>:                       Action Features.     (line  17)
+* $<TYPEALT>N:                           Java Action Features.
+                                                              (line  16)
+* $<TYPEALT>N <1>:                       Action Features.     (line  22)
 * $@N:                                   Mid-Rule Action Translation.
                                                               (line   6)
+* $@N <1>:                               Table of Symbols.    (line  24)
 * $accept:                               Table of Symbols.    (line  96)
 * $end:                                  Table of Symbols.    (line 139)
 * $N:                                    Actions.             (line   6)
+* $N <1>:                                Java Action Features.
+                                                              (line  12)
+* $N <2>:                                Action Features.     (line  13)
+* $N <3>:                                Table of Symbols.    (line  33)
 * $NAME:                                 Actions.             (line   6)
+* $NAME <1>:                             Table of Symbols.    (line  37)
 * $undefined:                            Table of Symbols.    (line 268)
-* $[:                                    Table of Symbols.    (line  38)
 * $[NAME]:                               Actions.             (line   6)
-* %:                                     Java Declarations Summary.
-                                                              (line  56)
-* % <1>:                                 Table of Symbols.    (line  47)
+* $[NAME] <1>:                           Table of Symbols.    (line  38)
 * %%:                                    Java Declarations Summary.
                                                               (line  52)
 * %% <1>:                                Table of Symbols.    (line  42)
 * %?:                                    Semantic Predicates. (line   6)
-* %? <1>:                                Table of Symbols.    (line  52)
+* %?{EXPRESSION}:                        Table of Symbols.    (line  52)
 * %code:                                 Prologue Alternatives.
                                                               (line   6)
 * %code <1>:                             Decl Summary.        (line  45)
@@ -13054,10 +13052,13 @@ Index of Terms
 * %union <3>:                            Table of Symbols.    (line 273)
 * %verbose:                              Decl Summary.        (line 205)
 * %yacc:                                 Decl Summary.        (line 211)
+* %{:                                    Java Declarations Summary.
+                                                              (line  56)
+* %{CODE%}:                              Table of Symbols.    (line  47)
 * /*:                                    Table of Symbols.    (line  63)
-* /* … */:                               Grammar Outline.     (line   6)
+* /* ... */:                             Grammar Outline.     (line   6)
 * //:                                    Table of Symbols.    (line  64)
-* // …:                                  Grammar Outline.     (line   6)
+* // ...:                                Grammar Outline.     (line   6)
 * ::                                     Table of Symbols.    (line  67)
 * ;:                                     Table of Symbols.    (line  71)
 * <*>:                                   Destructor Decl.     (line   6)
@@ -13066,28 +13067,28 @@ Index of Terms
 * <>:                                    Destructor Decl.     (line   6)
 * <> <1>:                                Printer Decl.        (line   6)
 * <> <2>:                                Table of Symbols.    (line  87)
-* @:                                     Java Action Features.
-                                                              (line  34)
-* @ <1>:                                 Java Action Features.
-                                                              (line  38)
-* @ <2>:                                 Action Features.     (line  97)
-* @ <3>:                                 Action Features.     (line 102)
-* @ <4>:                                 Table of Symbols.    (line   6)
-* @ <5>:                                 Table of Symbols.    (line  10)
-* @ <6>:                                 Table of Symbols.    (line  11)
-* @ <7>:                                 Table of Symbols.    (line  19)
-* @ <8>:                                 Table of Symbols.    (line  20)
 * @$:                                    Actions and Locations.
                                                               (line   6)
+* @$ <1>:                                Java Action Features.
+                                                              (line  38)
+* @$ <2>:                                Action Features.     (line  97)
+* @$ <3>:                                Table of Symbols.    (line   6)
 * @N:                                    Mid-Rule Action Translation.
                                                               (line   6)
 * @N <1>:                                Actions and Locations.
                                                               (line   6)
-* @N <2>:                                Action Features.     (line 103)
+* @N <2>:                                Java Action Features.
+                                                              (line  34)
+* @N <3>:                                Action Features.     (line 102)
+* @N <4>:                                Action Features.     (line 103)
+* @N <5>:                                Table of Symbols.    (line  10)
+* @N <6>:                                Table of Symbols.    (line  11)
 * @NAME:                                 Actions and Locations.
                                                               (line   6)
+* @NAME <1>:                             Table of Symbols.    (line  19)
 * @[NAME]:                               Actions and Locations.
                                                               (line   6)
+* @[NAME] <1>:                           Table of Symbols.    (line  20)
 * |:                                     Rules Syntax.        (line  48)
 * | <1>:                                 Table of Symbols.    (line  74)
 * abstract syntax tree:                  Implementing Gotos/Loops.
@@ -13143,7 +13144,7 @@ Index of Terms
 * build<T> on semantic_type <1>:         C++ Variants.        (line  49)
 * C code, section for additional:        Epilogue.            (line   6)
 * C-language interface:                  Interface.           (line   6)
-* ‘calc’:                                Infix Calc.          (line   6)
+* calc:                                  Infix Calc.          (line   6)
 * calculator, infix notation:            Infix Calc.          (line   6)
 * calculator, location tracking:         Location Tracking Calc.
                                                               (line   6)
@@ -13172,7 +13173,7 @@ Index of Terms
                                                               (line   6)
 * controlling function:                  Rpcalc Main.         (line   6)
 * core, item set:                        Understanding.       (line 123)
-* dangling ‘else’:                       Shift/Reduce.        (line   6)
+* dangling else:                         Shift/Reduce.        (line   6)
 * data type of locations:                Location Type.       (line   6)
 * data types in actions:                 Action Types.        (line   6)
 * data types of semantic values:         Value Type.          (line   6)
@@ -13213,7 +13214,7 @@ Index of Terms
 * discarded symbols, mid-rule actions:   Using Mid-Rule Actions.
                                                               (line  76)
 * dot:                                   Graphviz.            (line   6)
-* ‘else’, dangling:                      Shift/Reduce.        (line   6)
+* else, dangling:                        Shift/Reduce.        (line   6)
 * empty rule:                            Empty Rules.         (line   6)
 * end of location:                       C++ location.        (line  21)
 * end of Location:                       Java Location Values.
@@ -13267,19 +13268,19 @@ Index of Terms
 * gettext:                               Internationalization.
                                                               (line   6)
 * glossary:                              Glossary.            (line   6)
-* GLR parsers and ‘inline’:              Compiler Requirements.
+* GLR parsers and inline:                Compiler Requirements.
                                                               (line   6)
-* GLR parsers and ‘yychar’:              GLR Semantic Actions.
+* GLR parsers and yychar:                GLR Semantic Actions.
                                                               (line  16)
-* GLR parsers and ‘yyclearin’:           GLR Semantic Actions.
+* GLR parsers and yyclearin:             GLR Semantic Actions.
                                                               (line  24)
-* GLR parsers and ‘YYERROR’:             GLR Semantic Actions.
+* GLR parsers and YYERROR:               GLR Semantic Actions.
                                                               (line  37)
-* GLR parsers and ‘yylloc’:              GLR Semantic Actions.
+* GLR parsers and yylloc:                GLR Semantic Actions.
                                                               (line  16)
-* GLR parsers and ‘YYLLOC_DEFAULT’:      Location Default Action.
+* GLR parsers and YYLLOC_DEFAULT:        Location Default Action.
                                                               (line   6)
-* GLR parsers and ‘yylval’:              GLR Semantic Actions.
+* GLR parsers and yylval:                GLR Semantic Actions.
                                                               (line  16)
 * GLR parsing:                           Language and Grammar.
                                                               (line  33)
@@ -13310,7 +13311,7 @@ Index of Terms
 * infix notation calculator:             Infix Calc.          (line   6)
 * initialize on location:                C++ location.        (line  16)
 * initialize on position:                C++ position.        (line  12)
-* ‘inline’:                              Compiler Requirements.
+* inline:                                Compiler Requirements.
                                                               (line   6)
 * interface:                             Interface.           (line   6)
 * internationalization:                  Internationalization.
@@ -13366,14 +13367,14 @@ Index of Terms
                                                               (line  34)
 * LR grammars:                           Language and Grammar.
                                                               (line  22)
-* ‘ltcalc’:                              Location Tracking Calc.
+* ltcalc:                                Location Tracking Calc.
                                                               (line   6)
 * main function in simple example:       Rpcalc Main.         (line   6)
-* make_ on symbol_type:                  Complete Symbols.    (line  28)
-* make_ on symbol_type <1>:              Complete Symbols.    (line  30)
+* make_TOKEN on symbol_type:             Complete Symbols.    (line  28)
+* make_TOKEN on symbol_type <1>:         Complete Symbols.    (line  30)
 * memory exhaustion:                     Memory Management.   (line   6)
 * memory management:                     Memory Management.   (line   6)
-* ‘mfcalc’:                              Multi-function Calc. (line   6)
+* mfcalc:                                Multi-function Calc. (line   6)
 * mid-rule actions:                      Mid-Rule Actions.    (line   6)
 * mid-rule actions <1>:                  Destructor Decl.     (line  86)
 * multi-function calculator:             Multi-function Calc. (line   6)
@@ -13463,7 +13464,7 @@ Index of Terms
 * requiring a version of Bison:          Require Decl.        (line   6)
 * reverse polish notation:               RPN Calc.            (line   6)
 * right recursion:                       Recursion.           (line  17)
-* ‘rpcalc’:                              RPN Calc.            (line   6)
+* rpcalc:                                RPN Calc.            (line   6)
 * rule syntax:                           Rules Syntax.        (line   6)
 * rule, empty:                           Empty Rules.         (line   6)
 * rule, pointed:                         Understanding.       (line 101)
@@ -13689,194 +13690,194 @@ Index of Terms
 Tag Table:
 Node: Top1047
 Node: Introduction15927
-Node: Conditions17609
-Node: Copying19532
-Node: Concepts57272
-Node: Language and Grammar58468
-Node: Grammar in Bison64555
-Node: Semantic Values66505
-Node: Semantic Actions68664
-Node: GLR Parsers69837
-Node: Simple GLR Parsers72672
-Node: Merging GLR Parses79152
-Node: GLR Semantic Actions83813
-Node: Semantic Predicates86430
-Node: Compiler Requirements88979
-Node: Locations89738
-Node: Bison Parser91208
-Node: Stages94411
-Node: Grammar Layout95703
-Node: Examples97061
-Node: RPN Calc98263
-Node: Rpcalc Declarations99273
-Node: Rpcalc Rules101387
-Node: Rpcalc Input103321
-Node: Rpcalc Line104911
-Node: Rpcalc Expr106064
-Node: Rpcalc Lexer108009
-Node: Rpcalc Main110702
-Node: Rpcalc Error111113
-Node: Rpcalc Generate112170
-Node: Rpcalc Compile113454
-Node: Infix Calc114418
-Node: Simple Error Recovery117313
-Node: Location Tracking Calc119247
-Node: Ltcalc Declarations119947
-Node: Ltcalc Rules121069
-Node: Ltcalc Lexer122963
-Node: Multi-function Calc125307
-Node: Mfcalc Declarations127045
-Node: Mfcalc Rules129136
-Node: Mfcalc Symbol Table130469
-Node: Mfcalc Lexer133919
-Node: Mfcalc Main136652
-Node: Exercises137594
-Node: Grammar File138121
-Node: Grammar Outline138985
-Node: Prologue139844
-Node: Prologue Alternatives141702
-Node: Bison Declarations151601
-Node: Grammar Rules152029
-Node: Epilogue152504
-Node: Symbols153582
-Node: Rules160777
-Node: Rules Syntax161092
-Node: Empty Rules163153
-Node: Recursion164205
-Node: Semantics165869
-Node: Value Type167175
-Node: Multiple Types168563
-Node: Type Generation170115
-Node: Union Decl172110
-Node: Structured Value Type173530
-Node: Actions174555
-Node: Action Types178494
-Node: Mid-Rule Actions179848
-Node: Using Mid-Rule Actions180432
-Node: Mid-Rule Action Translation184589
-Node: Mid-Rule Conflicts186462
-Node: Tracking Locations189091
-Node: Location Type189755
-Node: Actions and Locations190803
-Node: Location Default Action193225
-Node: Named References196765
-Node: Declarations199452
-Node: Require Decl201130
-Node: Token Decl201453
-Node: Precedence Decl203951
-Node: Type Decl206242
-Node: Initial Action Decl207189
-Node: Destructor Decl208001
-Node: Printer Decl213816
-Node: Expect Decl216234
-Node: Start Decl218262
-Node: Pure Decl218654
-Node: Push Decl220463
-Node: Decl Summary225060
-Node: %define Summary234569
-Node: %code Summary249825
-Node: Multiple Parsers253804
-Node: Interface257053
-Node: Parser Function258417
-Node: Push Parser Function260822
-Node: Pull Parser Function261632
-Node: Parser Create Function262301
-Node: Parser Delete Function263137
-Node: Lexical263920
-Node: Calling Convention265405
-Node: Token Values268464
-Node: Token Locations269656
-Node: Pure Calling270588
-Node: Error Reporting273210
-Node: Action Features276628
-Node: Internationalization281065
-Node: Algorithm283716
-Node: Lookahead286162
-Node: Shift/Reduce288407
-Node: Precedence291636
-Node: Why Precedence292408
-Node: Using Precedence294315
-Node: Precedence Only295815
-Node: Precedence Examples297676
-Node: How Precedence298200
-Node: Non Operators299388
-Node: Contextual Precedence300985
-Node: Parser States302751
-Node: Reduce/Reduce304006
-Node: Mysterious Conflicts308776
-Node: Tuning LR312381
-Node: LR Table Construction313711
-Node: Default Reductions319458
-Node: LAC324372
-Node: Unreachable States329963
-Node: Generalized LR Parsing331966
-Node: Memory Management336359
-Node: Error Recovery338758
-Node: Context Dependency344098
-Node: Semantic Tokens344951
-Node: Lexical Tie-ins348027
-Node: Tie-in Recovery349493
-Node: Debugging351625
-Node: Understanding352871
-Node: Graphviz363670
-Node: Xml368087
-Node: Tracing369889
-Node: Enabling Traces370335
-Node: Mfcalc Traces374229
-Node: The YYPRINT Macro379644
-Node: Invocation380847
-Node: Bison Options382344
-Node: Option Cross Key396248
-Node: Yacc Library399091
-Node: Other Languages400164
-Node: C++ Parsers400491
-Node: C++ Bison Interface400988
-Node: C++ Semantic Values402481
-Node: C++ Unions403073
-Node: C++ Variants403943
-Node: C++ Location Values407190
-Node: C++ position408133
-Node: C++ location410187
-Node: User Defined Location Type412278
-Node: C++ Parser Interface413841
-Node: C++ Scanner Interface417055
-Node: Split Symbols417625
-Node: Complete Symbols419274
-Node: A Complete C++ Example421780
-Node: Calc++ --- C++ Calculator422724
-Node: Calc++ Parsing Driver423246
-Node: Calc++ Parser427039
-Node: Calc++ Scanner431708
-Node: Calc++ Top Level435163
-Node: Java Parsers435896
-Node: Java Bison Interface436649
-Node: Java Semantic Values439066
-Node: Java Location Values440740
-Node: Java Parser Interface442330
-Node: Java Scanner Interface447032
-Node: Java Action Features449403
-Node: Java Push Parser Interface452177
-Node: Java Differences455319
-Ref: Java Differences-Footnote-1458006
-Node: Java Declarations Summary458160
-Node: FAQ463065
-Node: Memory Exhausted464020
-Node: How Can I Reset the Parser464337
-Node: Strings are Destroyed466932
-Node: Implementing Gotos/Loops468641
-Node: Multiple start-symbols469926
-Node: Secure? Conform?471509
-Node: I can't build Bison471959
-Node: Where can I find help?472699
-Node: Bug Reports473494
-Node: More Languages474970
-Node: Beta Testing475330
-Node: Mailing Lists476206
-Node: Table of Symbols476417
-Node: Glossary494781
-Node: Copying This Manual503838
-Node: Bibliography529153
-Node: Index of Terms531072
+Node: Conditions17613
+Node: Copying19536
+Node: Concepts57276
+Node: Language and Grammar58472
+Node: Grammar in Bison64615
+Node: Semantic Values66573
+Node: Semantic Actions68736
+Node: GLR Parsers69913
+Node: Simple GLR Parsers72756
+Node: Merging GLR Parses79236
+Node: GLR Semantic Actions83901
+Node: Semantic Predicates86518
+Node: Compiler Requirements89067
+Node: Locations89826
+Node: Bison Parser91304
+Node: Stages94519
+Node: Grammar Layout95811
+Node: Examples97173
+Node: RPN Calc98375
+Node: Rpcalc Declarations99389
+Node: Rpcalc Rules101503
+Node: Rpcalc Input103437
+Node: Rpcalc Line105031
+Node: Rpcalc Expr106184
+Node: Rpcalc Lexer108129
+Node: Rpcalc Main110822
+Node: Rpcalc Error111233
+Node: Rpcalc Generate112290
+Node: Rpcalc Compile113574
+Node: Infix Calc114538
+Node: Simple Error Recovery117433
+Node: Location Tracking Calc119371
+Node: Ltcalc Declarations120071
+Node: Ltcalc Rules121193
+Node: Ltcalc Lexer123087
+Node: Multi-function Calc125431
+Node: Mfcalc Declarations127169
+Node: Mfcalc Rules129260
+Node: Mfcalc Symbol Table130593
+Node: Mfcalc Lexer134043
+Node: Mfcalc Main136776
+Node: Exercises137718
+Node: Grammar File138245
+Node: Grammar Outline139109
+Node: Prologue139967
+Node: Prologue Alternatives141825
+Node: Bison Declarations151724
+Node: Grammar Rules152152
+Node: Epilogue152631
+Node: Symbols153709
+Node: Rules160936
+Node: Rules Syntax161251
+Node: Empty Rules163316
+Node: Recursion164372
+Node: Semantics166056
+Node: Value Type167362
+Node: Multiple Types168750
+Node: Type Generation170302
+Node: Union Decl172297
+Node: Structured Value Type173717
+Node: Actions174742
+Node: Action Types178682
+Node: Mid-Rule Actions180036
+Node: Using Mid-Rule Actions180620
+Node: Mid-Rule Action Translation184777
+Node: Mid-Rule Conflicts186650
+Node: Tracking Locations189283
+Node: Location Type189947
+Node: Actions and Locations190995
+Node: Location Default Action193417
+Node: Named References196957
+Node: Declarations199653
+Node: Require Decl201335
+Node: Token Decl201658
+Node: Precedence Decl204156
+Node: Type Decl206451
+Node: Initial Action Decl207398
+Node: Destructor Decl208210
+Node: Printer Decl214033
+Node: Expect Decl216451
+Node: Start Decl218479
+Node: Pure Decl218871
+Node: Push Decl220688
+Node: Decl Summary225285
+Node: %define Summary234794
+Node: %code Summary250050
+Node: Multiple Parsers254029
+Node: Interface257278
+Node: Parser Function258642
+Node: Push Parser Function261047
+Node: Pull Parser Function261857
+Node: Parser Create Function262526
+Node: Parser Delete Function263362
+Node: Lexical264145
+Node: Calling Convention265634
+Node: Token Values268693
+Node: Token Locations269885
+Node: Pure Calling270817
+Node: Error Reporting273440
+Node: Action Features276866
+Node: Internationalization281298
+Node: Algorithm283949
+Node: Lookahead286407
+Node: Shift/Reduce288656
+Node: Precedence291889
+Node: Why Precedence292661
+Node: Using Precedence294576
+Node: Precedence Only296076
+Node: Precedence Examples297937
+Node: How Precedence298461
+Node: Non Operators299649
+Node: Contextual Precedence301246
+Node: Parser States303012
+Node: Reduce/Reduce304267
+Node: Mysterious Conflicts309037
+Node: Tuning LR312642
+Node: LR Table Construction313972
+Node: Default Reductions319719
+Node: LAC324645
+Node: Unreachable States330236
+Node: Generalized LR Parsing332243
+Node: Memory Management336636
+Node: Error Recovery339035
+Node: Context Dependency344375
+Node: Semantic Tokens345232
+Node: Lexical Tie-ins348308
+Node: Tie-in Recovery349778
+Node: Debugging351910
+Node: Understanding353156
+Node: Graphviz363983
+Node: Xml368400
+Node: Tracing370202
+Node: Enabling Traces370648
+Node: Mfcalc Traces374542
+Node: The YYPRINT Macro379957
+Node: Invocation381160
+Node: Bison Options382657
+Node: Option Cross Key396561
+Node: Yacc Library399404
+Node: Other Languages400477
+Node: C++ Parsers400804
+Node: C++ Bison Interface401301
+Node: C++ Semantic Values402794
+Node: C++ Unions403386
+Node: C++ Variants404256
+Node: C++ Location Values407503
+Node: C++ position408446
+Node: C++ location410500
+Node: User Defined Location Type412591
+Node: C++ Parser Interface414154
+Node: C++ Scanner Interface417368
+Node: Split Symbols417938
+Node: Complete Symbols419587
+Node: A Complete C++ Example422091
+Node: Calc++ --- C++ Calculator423039
+Node: Calc++ Parsing Driver423561
+Node: Calc++ Parser427358
+Node: Calc++ Scanner432027
+Node: Calc++ Top Level435482
+Node: Java Parsers436215
+Node: Java Bison Interface436968
+Node: Java Semantic Values439385
+Node: Java Location Values441059
+Node: Java Parser Interface442657
+Node: Java Scanner Interface447359
+Node: Java Action Features449730
+Node: Java Push Parser Interface452499
+Node: Java Differences455641
+Ref: Java Differences-Footnote-1458328
+Node: Java Declarations Summary458482
+Node: FAQ463386
+Node: Memory Exhausted464341
+Node: How Can I Reset the Parser464658
+Node: Strings are Destroyed467253
+Node: Implementing Gotos/Loops468962
+Node: Multiple start-symbols470255
+Node: Secure? Conform?471838
+Node: I can't build Bison472288
+Node: Where can I find help?473028
+Node: Bug Reports473823
+Node: More Languages475299
+Node: Beta Testing475659
+Node: Mailing Lists476535
+Node: Table of Symbols476746
+Node: Glossary495099
+Node: Copying This Manual504156
+Node: Bibliography529475
+Node: Index of Terms531394
 
 End Tag Table
 
