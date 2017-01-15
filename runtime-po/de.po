@@ -1,0 +1,63 @@
+# German translation for messages of GNU bison (runtime module).
+# Copyright (C) 2004 Free Software Foundation, Inc.
+# Ulrich Drepper <drepper@gnu.ai.mit.edu>, 1996.
+# Michael Piefel <piefel@informatik.hu-berlin.de>, 2002, 2003, 2004, 2005, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bison-runtime 2.3a\n"
+"Report-Msgid-Bugs-To: bug-bison@gnu.org\n"
+"POT-Creation-Date: 2013-06-24 10:05+0200\n"
+"PO-Revision-Date: 2006-12-12 09:38+0100\n"
+"Last-Translator: Michael Piefel <piefel@informatik.hu-berlin.de>\n"
+"Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: data/glr.c:775 data/yacc.c:660
+msgid "syntax error: cannot back up"
+msgstr "Syntaxfehler: Kann nicht zurück gehen"
+
+#: data/glr.c:1656
+msgid "syntax is ambiguous"
+msgstr "Syntax ist mehrdeutig"
+
+#: data/glr.c:1977 data/glr.c:2057 data/glr.c:2097 data/glr.c:2361
+#: data/lalr1.cc:1084 data/lalr1.cc:1104 data/yacc.c:1227 data/yacc.c:1727
+#: data/yacc.c:1733
+msgid "syntax error"
+msgstr "Syntaxfehler"
+
+#: data/glr.c:2058 data/lalr1.cc:1085 data/yacc.c:1228
+#, c-format
+msgid "syntax error, unexpected %s"
+msgstr "Syntaxfehler, unerwartetes %s"
+
+#: data/glr.c:2059 data/lalr1.cc:1086 data/yacc.c:1229
+#, c-format
+msgid "syntax error, unexpected %s, expecting %s"
+msgstr "Syntaxfehler, unerwartetes %s, hatte %s erwartet"
+
+#: data/glr.c:2060 data/lalr1.cc:1087 data/yacc.c:1230
+#, c-format
+msgid "syntax error, unexpected %s, expecting %s or %s"
+msgstr "Syntaxfehler, unerwartetes %s, hatte %s oder %s erwartet"
+
+#: data/glr.c:2061 data/lalr1.cc:1088 data/yacc.c:1231
+#, c-format
+msgid "syntax error, unexpected %s, expecting %s or %s or %s"
+msgstr "Syntaxfehler, unerwartetes %s, hatte %s oder %s oder %s erwartet"
+
+#: data/glr.c:2062 data/lalr1.cc:1089 data/yacc.c:1232
+#, c-format
+msgid "syntax error, unexpected %s, expecting %s or %s or %s or %s"
+msgstr ""
+"Syntaxfehler, unerwartetes %s, hatte %s oder %s oder %s oder %s erwartet"
+
+#: data/glr.c:2421 data/yacc.c:1312 data/yacc.c:1314 data/yacc.c:1487
+#: data/yacc.c:1884
+msgid "memory exhausted"
+msgstr "Speicher ausgeschöpft"
