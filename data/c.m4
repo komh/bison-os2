@@ -2,7 +2,7 @@
 
 # C M4 Macros for Bison.
 
-# Copyright (C) 2002, 2004-2013 Free Software Foundation, Inc.
+# Copyright (C) 2002, 2004-2015 Free Software Foundation, Inc.
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -97,7 +97,8 @@ m4_define([b4_api_PREFIX],
 m4_define_default([b4_prefix], [b4_api_prefix])
 
 # If the %union is not named, its name is YYSTYPE.
-m4_define_default([b4_union_name], [b4_api_PREFIX[]STYPE])
+b4_percent_define_default([[api.value.union.name]],
+                          [b4_api_PREFIX[][STYPE]])
 
 
 ## ------------------------ ##
@@ -205,13 +206,32 @@ m4_define([b4_table_value_equals],
 
 # b4_attribute_define
 # -------------------
-# Provide portability for __attribute__.
+# Provide portable compiler "attributes".
 m4_define([b4_attribute_define],
-[#ifndef __attribute__
-/* This feature is available in gcc versions 2.5 and later.  */
-# if (! defined __GNUC__ || __GNUC__ < 2 \
-      || (__GNUC__ == 2 && __GNUC_MINOR__ < 5))
-#  define __attribute__(Spec) /* empty */
+[#ifndef YY_ATTRIBUTE
+# if (defined __GNUC__                                               \
+      && (2 < __GNUC__ || (__GNUC__ == 2 && 96 <= __GNUC_MINOR__)))  \
+     || defined __SUNPRO_C && 0x5110 <= __SUNPRO_C
+#  define YY_ATTRIBUTE(Spec) __attribute__(Spec)
+# else
+#  define YY_ATTRIBUTE(Spec) /* empty */
+# endif
+#endif
+
+#ifndef YY_ATTRIBUTE_PURE
+# define YY_ATTRIBUTE_PURE   YY_ATTRIBUTE ((__pure__))
+#endif
+
+#ifndef YY_ATTRIBUTE_UNUSED
+# define YY_ATTRIBUTE_UNUSED YY_ATTRIBUTE ((__unused__))
+#endif
+
+#if !defined _Noreturn \
+     && (!defined __STDC_VERSION__ || __STDC_VERSION__ < 201112)
+# if defined _MSC_VER && 1200 <= _MSC_VER
+#  define _Noreturn __declspec (noreturn)
+# else
+#  define _Noreturn YY_ATTRIBUTE ((__noreturn__))
 # endif
 #endif
 
@@ -220,6 +240,25 @@ m4_define([b4_attribute_define],
 # define YYUSE(E) ((void) (E))
 #else
 # define YYUSE(E) /* empty */
+#endif
+
+#if defined __GNUC__ && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
+/* Suppress an incorrect diagnostic about yylval being uninitialized.  */
+# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN \
+    _Pragma ("GCC diagnostic push") \
+    _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")\
+    _Pragma ("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
+# define YY_IGNORE_MAYBE_UNINITIALIZED_END \
+    _Pragma ("GCC diagnostic pop")
+#else
+# define YY_INITIAL_VALUE(Value) Value
+#endif
+#ifndef YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
+# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
+# define YY_IGNORE_MAYBE_UNINITIALIZED_END
+#endif
+#ifndef YY_INITIAL_VALUE
+# define YY_INITIAL_VALUE(Value) /* Nothing. */
 #endif
 ])
 
@@ -231,14 +270,14 @@ m4_define([b4_attribute_define],
 
 # b4_null_define
 # --------------
-# Portability issues: define a YY_NULL appropriate for the current
+# Portability issues: define a YY_NULLPTR appropriate for the current
 # language (C, C++98, or C++11).
 m4_define([b4_null_define],
-[# ifndef YY_NULL
+[# ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
-#   define YY_NULL nullptr
+#   define YY_NULLPTR nullptr
 #  else
-#   define YY_NULL 0
+#   define YY_NULLPTR 0
 #  endif
 # endif[]dnl
 ])
@@ -247,7 +286,7 @@ m4_define([b4_null_define],
 # b4_null
 # -------
 # Return a null pointer constant.
-m4_define([b4_null], [YY_NULL])
+m4_define([b4_null], [YY_NULLPTR])
 
 # b4_integral_parser_table_define(TABLE-NAME, CONTENT, COMMENT)
 # -------------------------------------------------------------
@@ -446,7 +485,9 @@ m4_ifset([b4_parse_param], [, b4_parse_param]))[
     yymsg = "Deleting";
   YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
 
+  YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
   ]b4_symbol_actions([destructor])[
+  YY_IGNORE_MAYBE_UNINITIALIZED_END
 }]dnl
 ])
 
@@ -456,9 +497,9 @@ m4_ifset([b4_parse_param], [, b4_parse_param]))[
 # Define the "yy_symbol_print" function.
 m4_define_default([b4_yy_symbol_print_define],
 [[
-/*--------------------------------.
-| Print this symbol on YYOUTPUT.  |
-`--------------------------------*/
+/*----------------------------------------.
+| Print this symbol's value on YYOUTPUT.  |
+`----------------------------------------*/
 
 ]b4_function_define([yy_symbol_value_print],
     [static void],
@@ -520,15 +561,15 @@ b4_locations_if([, yylocationp])[]b4_user_args[);
 # b4_symbol_type_register(SYMBOL-NUM)
 # -----------------------------------
 # Symbol SYMBOL-NUM has a type (for variant) instead of a type-tag.
-# Extend the definition of %union's body with a field of that type,
-# and extend the symbol's "type" field to point to the field name,
-# instead of the type name.
+# Extend the definition of %union's body (b4_union_members) with a
+# field of that type, and extend the symbol's "type" field to point to
+# the field name, instead of the type name.
 m4_define([b4_symbol_type_register],
 [m4_define([b4_symbol($1, type_tag)],
            [b4_symbol_if([$1], [has_id],
                          [b4_symbol([$1], [id])],
                          [yytype_[]b4_symbol([$1], [number])])])dnl
-m4_append([b4_user_union_members],
+m4_append([b4_union_members],
 m4_expand([
   b4_symbol_tag_comment([$1])dnl
   b4_symbol([$1], [type]) b4_symbol([$1], [type_tag]);]))
@@ -568,10 +609,9 @@ m4_copy_force([b4_symbol_value_union], [b4_symbol_value])
 ])
 
 
-# ---------------- #
-# api.value.type.  #
-# ---------------- #
-
+# -------------------------- #
+# api.value.type = variant.  #
+# -------------------------- #
 
 # b4_value_type_setup_variant
 # ---------------------------
@@ -646,11 +686,13 @@ typedef ]b4_percent_define_get([[api.value.type]])[ ]b4_api_PREFIX[STYPE;
 [m4_bmatch(b4_percent_define_get([[api.value.type]]),
 [union\|union-directive],
 [[#if ! defined ]b4_api_PREFIX[STYPE && ! defined ]b4_api_PREFIX[STYPE_IS_DECLARED
-typedef union ]b4_union_name[ ]b4_api_PREFIX[STYPE;
-union ]b4_union_name[
+]b4_percent_define_get_syncline([[api.value.union.name]])[
+union ]b4_percent_define_get([[api.value.union.name]])[
 {
 ]b4_user_union_members[
 };
+]b4_percent_define_get_syncline([[api.value.union.name]])[
+typedef union ]b4_percent_define_get([[api.value.union.name]])[ ]b4_api_PREFIX[STYPE;
 # define ]b4_api_PREFIX[STYPE_IS_TRIVIAL 1
 # define ]b4_api_PREFIX[STYPE_IS_DECLARED 1
 #endif
@@ -762,7 +804,7 @@ m4_define([b4_yy_location_print_define],
 
 /* Print *YYLOCP on YYO.  Private, do not rely on its existence. */
 
-__attribute__((__unused__))
+YY_ATTRIBUTE_UNUSED
 ]b4_function_define([yy_location_print_],
     [static unsigned],
                [[FILE *yyo],                    [yyo]],

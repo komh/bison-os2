@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2013 Free Software Foundation, Inc.
+# Copyright (C) 2001-2015 Free Software Foundation, Inc.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -111,7 +111,9 @@ BUILT_SOURCES +=                                \
 ## yacc.  ##
 ## ------ ##
 
-bin_SCRIPTS = $(YACC_SCRIPT)
+if ENABLE_YACC
+bin_SCRIPTS = src/yacc
+endif
 EXTRA_SCRIPTS = src/yacc
 MOSTLYCLEANFILES += src/yacc
 

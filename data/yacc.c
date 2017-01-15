@@ -1,11 +1,11 @@
                                                              -*- C -*-
 # Yacc compatible skeleton for Bison
 
-# Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation,
+# Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation,
 # Inc.
 
 m4_pushdef([b4_copyright_years],
-           [1984, 1989-1990, 2000-2013])
+           [1984, 1989-1990, 2000-2015])
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -175,36 +175,19 @@ m4_define([b4_declare_scanner_communication_variables], [[
 int yychar;
 
 ]b4_pure_if([[
-#if defined __GNUC__ && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
-/* Suppress an incorrect diagnostic about yylval being uninitialized.  */
-# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN \
-    _Pragma ("GCC diagnostic push") \
-    _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")\
-    _Pragma ("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
-# define YY_IGNORE_MAYBE_UNINITIALIZED_END \
-    _Pragma ("GCC diagnostic pop")
-#else
+/* The semantic value of the lookahead symbol.  */
 /* Default value used for initialization, for pacifying older GCCs
    or non-GCC compilers.  */
-static YYSTYPE yyval_default;
-# define YY_INITIAL_VALUE(Value) = Value
-#endif]b4_locations_if([[
-static YYLTYPE yyloc_default][]b4_yyloc_default[;]])])[
-#ifndef YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-# define YY_IGNORE_MAYBE_UNINITIALIZED_END
-#endif
-#ifndef YY_INITIAL_VALUE
-# define YY_INITIAL_VALUE(Value) /* Nothing. */
-#endif
-
-/* The semantic value of the lookahead symbol.  */
-YYSTYPE yylval YY_INITIAL_VALUE (yyval_default);]b4_locations_if([[
+YY_INITIAL_VALUE (static YYSTYPE yyval_default;)
+YYSTYPE yylval YY_INITIAL_VALUE (= yyval_default);]b4_locations_if([[
 
 /* Location data for the lookahead symbol.  */
-YYLTYPE yylloc]b4_pure_if([ = yyloc_default], [b4_yyloc_default])[;
-]])b4_pure_if([], [[
-
+static YYLTYPE yyloc_default]b4_yyloc_default[;
+YYLTYPE yylloc = yyloc_default;]])],
+[[/* The semantic value of the lookahead symbol.  */
+YYSTYPE yylval;]b4_locations_if([[
+/* Location data for the lookahead symbol.  */
+YYLTYPE yylloc]b4_yyloc_default[;]])[
 /* Number of syntax errors so far.  */
 int yynerrs;]])])
 
@@ -1125,11 +1108,11 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
                 ]b4_lac_if([[yytype_int16 *yyesa, yytype_int16 **yyes,
                 YYSIZE_T *yyes_capacity, ]])[yytype_int16 *yyssp, int yytoken)
 {
-  YYSIZE_T yysize0 = yytnamerr (YY_NULL, yytname[yytoken]);
+  YYSIZE_T yysize0 = yytnamerr (YY_NULLPTR, yytname[yytoken]);
   YYSIZE_T yysize = yysize0;
   enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
   /* Internationalized format string. */
-  const char *yyformat = YY_NULL;
+  const char *yyformat = YY_NULLPTR;
   /* Arguments of yyformat. */
   char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
   /* Number of reported tokens (one for the "unexpected", one per
@@ -1204,7 +1187,7 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
                   }
                 yyarg[yycount++] = yytname[yyx];
                 {
-                  YYSIZE_T yysize1 = yysize + yytnamerr (YY_NULL, yytname[yyx]);
+                  YYSIZE_T yysize1 = yysize + yytnamerr (YY_NULLPTR, yytname[yyx]);
                   if (! (yysize <= yysize1
                          && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
                     return 2;
@@ -1288,7 +1271,7 @@ static char yypstate_allocated = 0;]])b4_pull_if([
 
 b4_function_define([[yyparse]], [[int]], b4_parse_param)[
 {
-  return yypull_parse (YY_NULL]m4_ifset([b4_parse_param],
+  return yypull_parse (YY_NULLPTR]m4_ifset([b4_parse_param],
                                   [[, ]b4_args(b4_parse_param)])[);
 }
 
@@ -1330,10 +1313,10 @@ b4_function_define([[yyparse]], [[int]], b4_parse_param)[
 {
   yypstate *yyps;]b4_pure_if([], [[
   if (yypstate_allocated)
-    return YY_NULL;]])[
+    return YY_NULLPTR;]])[
   yyps = (yypstate *) malloc (sizeof *yyps);
   if (!yyps)
-    return YY_NULL;
+    return YY_NULLPTR;
   yyps->yynew = 1;]b4_pure_if([], [[
   yypstate_allocated = 1;]])[
   return yyps;

@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2003, 2005-2013 Free Software Foundation, Inc.
+## Copyright (C) 2001-2003, 2005-2015 Free Software Foundation, Inc.
 
 ## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -23,9 +23,10 @@ doc_bison_TEXINFOS =                            \
 # Cannot express dependencies directly on file names because of Automake.
 # Obfuscate with a variable.
 doc_bison = doc/bison
-$(doc_bison).dvi: $(FIGS_DOT:.dot=.eps)
-$(doc_bison).pdf: $(FIGS_DOT:.dot=.pdf)
-$(doc_bison).html: $(FIGS_DOT:.dot=.png)
+$(doc_bison).dvi: $(FIGS_GV:.gv=.eps)
+$(doc_bison).info: $(FIGS_GV:.gv=.txt)
+$(doc_bison).pdf: $(FIGS_GV:.gv=.pdf)
+$(doc_bison).html: $(FIGS_GV:.gv=.png)
 
 TEXI2DVI = texi2dvi --build-dir=doc/bison.t2d -I doc
 CLEANDIRS = doc/bison.t2d
@@ -84,11 +85,13 @@ doc/refcard.pdf: doc/refcard.tex
 # repeated builds of bison.help.
 
 EXTRA_DIST += $(top_srcdir)/doc/bison.help
+if ! CROSS_COMPILING
 MAINTAINERCLEANFILES += $(top_srcdir)/doc/bison.help
 $(top_srcdir)/doc/bison.help: src/bison$(EXEEXT)
 	$(AM_V_GEN)src/bison$(EXEEXT) --version >doc/bison.help.tmp
 	$(AM_V_at) src/bison$(EXEEXT) --help   >>doc/bison.help.tmp
 	$(AM_V_at)$(top_srcdir)/build-aux/move-if-change doc/bison.help.tmp $@
+endif ! CROSS_COMPILING
 
 
 ## ----------- ##
@@ -105,7 +108,11 @@ remove_time_stamp = \
   sed 's/^\(\.TH[^"]*"[^"]*"[^"]*\)"[^"]*"/\1/'
 
 # Depend on configure to get version number changes.
-$(top_srcdir)/doc/bison.1: doc/bison.help doc/bison.x $(top_srcdir)/configure
+if ! CROSS_COMPILING
+MAN_DEPS = doc/bison.help doc/bison.x $(top_srcdir)/configure
+endif
+
+$(top_srcdir)/doc/bison.1: $(MAN_DEPS)
 	$(AM_V_GEN)$(HELP2MAN)			\
 	    --include=$(top_srcdir)/doc/bison.x	\
 	    --output=$@.t src/bison$(EXEEXT)
@@ -117,32 +124,34 @@ $(top_srcdir)/doc/bison.1: doc/bison.help doc/bison.x $(top_srcdir)/configure
 	fi
 	$(AM_V_at)rm -f $@*.t
 
+if ENABLE_YACC
 nodist_man_MANS = doc/yacc.1
+endif
 
 ## ----------------------------- ##
 ## Graphviz examples generation. ##
 ## ----------------------------- ##
 
-CLEANDIRS += doc/figs
-FIGS_DOT =                                                      \
-  doc/figs/example.dot                                          \
-  doc/figs/example-reduce.dot doc/figs/example-shift.dot
-EXTRA_DIST +=                                                           \
-  $(FIGS_DOT)                                                           \
-  $(FIGS_DOT:.dot=.eps) $(FIGS_DOT:.dot=.pdf) $(FIGS_DOT:.dot=.png)
-SUFFIXES += .dot .eps .pdf .png
+CLEANFILES += $(FIGS_GV:.gv=.eps) $(FIGS_GV:.gv=.pdf) $(FIGS_GV:.gv=.png)
+FIGS_GV =                                               \
+  doc/figs/example.gv                                   \
+  doc/figs/example-reduce.gv doc/figs/example-shift.gv
+EXTRA_DIST +=                                                   \
+  $(FIGS_GV) $(FIGS_GV:.gv=.txt)                                \
+  $(FIGS_GV:.gv=.eps) $(FIGS_GV:.gv=.pdf) $(FIGS_GV:.gv=.png)
+SUFFIXES += .gv .eps .pdf .png
 
-.dot.eps:
+.gv.eps:
 	$(AM_V_GEN) $(MKDIR_P) `echo "./$@" | sed -e 's,/[^/]*$$,,'`
 	$(AM_V_at) $(DOT) -Gmargin=0 -Teps $< >$@.tmp
 	$(AM_V_at) mv $@.tmp $@
 
-.dot.pdf:
+.gv.pdf:
 	$(AM_V_GEN) $(MKDIR_P) `echo "./$@" | sed -e 's,/[^/]*$$,,'`
 	$(AM_V_at) $(DOT) -Gmargin=0 -Tpdf $< >$@.tmp
 	$(AM_V_at) mv $@.tmp $@
 
-.dot.png:
+.gv.png:
 	$(AM_V_GEN) $(MKDIR_P) `echo "./$@" | sed -e 's,/[^/]*$$,,'`
 	$(AM_V_at) $(DOT) -Gmargin=0 -Tpng $< >$@.tmp
 	$(AM_V_at) mv $@.tmp $@

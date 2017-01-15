@@ -1,6 +1,6 @@
 e# Executing Actions.                               -*- Autotest -*-
 
-# Copyright (C) 2001-2013 Free Software Foundation, Inc.
+# Copyright (C) 2001-2015 Free Software Foundation, Inc.
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -596,7 +596,7 @@ thing:
 ;
 %%
 /* Alias to ARGV[1]. */
-const char *source = YY_NULL;
+const char *source = YY_NULLPTR;
 
 ]AT_YYERROR_DEFINE[
 
@@ -633,7 +633,7 @@ main (int argc, const char *argv[])
 {
   int status;
   yydebug = !!getenv ("YYDEBUG");
-  assert (argc == 2);
+  assert (argc == 2); (void) argc;
   source = argv[1];
   status = yyparse ();
   switch (status)
@@ -1530,10 +1530,13 @@ AT_DATA_GRAMMAR([[input.y]],
 
 ]AT_SKEL_CC_IF([[
 # include <iostream>
-  static void
-  report (std::ostream& yyo, int ival, float fval)
+  namespace
   {
-    yyo << "ival: " << ival << ", fval: " <<  fval;
+    void
+    report (std::ostream& yyo, int ival, float fval)
+    {
+      yyo << "ival: " << ival << ", fval: " <<  fval;
+    }
   }
 ]], [[
 # include <stdio.h>

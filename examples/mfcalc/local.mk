@@ -1,4 +1,4 @@
-# Copyright (C) 2005-2006, 2008-2013 Free Software Foundation, Inc.
+# Copyright (C) 2005-2006, 2008-2015 Free Software Foundation, Inc.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,19 +18,22 @@
 ## -------------------- ##
 
 BUILT_SOURCES += $(mfcalc_sources)
-CLEANFILES +=  examples/mfcalc/mfcalc.[ch] examples/mfcalc/mfcalc.output
+CLEANFILES +=  %D%/mfcalc.[ch] %D%/mfcalc.output
 
-mfcalc_extracted =				\
-  examples/mfcalc/calc.h			\
-  examples/mfcalc/mfcalc.y
-mfcalc_sources =				\
-  $(mfcalc_extracted)
+mfcalc_extracted = %D%/calc.h %D%/mfcalc.y
+mfcalc_sources = $(mfcalc_extracted)
 extracted += $(mfcalc_extracted)
 
-check_PROGRAMS += examples/mfcalc/mfcalc
-examples_mfcalc_mfcalc_LDADD = -lm
-nodist_examples_mfcalc_mfcalc_SOURCES =		\
-  $(mfcalc_sources)
+check_PROGRAMS += %D%/mfcalc
+%C%_mfcalc_LDADD = -lm
+nodist_%C%_mfcalc_SOURCES = $(mfcalc_sources)
 
-examples_mfcalc_mfcalc_CPPFLAGS = -I$(top_builddir)/examples/mfcalc
-dist_TESTS += examples/mfcalc/mfcalc.test
+%C%_mfcalc_CPPFLAGS = -I$(top_builddir)/%D%
+dist_TESTS += %D%/mfcalc.test
+
+## ------------ ##
+## Installing.  ##
+## ------------ ##
+
+mfcalcdir = $(docdir)/examples/mfcalc
+mfcalc_DATA = $(mfcalc_extracted)

@@ -1,6 +1,8 @@
 \input texinfo @c -*-texinfo-*-
 @comment %**start of header
 @setfilename bison.info
+@documentencoding UTF-8
+@documentlanguage en
 @include version.texi
 @settitle Bison @value{VERSION}
 @setchapternewpage odd
@@ -33,7 +35,7 @@
 This manual (@value{UPDATED}) is for GNU Bison (version
 @value{VERSION}), the GNU parser generator.
 
-Copyright @copyright{} 1988-1993, 1995, 1998-2013 Free Software
+Copyright @copyright{} 1988-1993, 1995, 1998-2015 Free Software
 Foundation, Inc.
 
 @quotation
@@ -3849,7 +3851,7 @@ example:
 @noindent
 specifies the union tag @code{value}, so the corresponding C type is
 @code{union value}.  If you do not specify a tag, it defaults to
-@code{YYSTYPE}.
+@code{YYSTYPE} (@pxref{%define Summary,,api.value.union.name}).
 
 As another extension to POSIX, you may specify multiple @code{%union}
 declarations; their contents are concatenated.  However, only the first
@@ -5143,7 +5145,9 @@ value by default.  However, when the parser displays a @code{STRING1} or a
 @code{string1}, it formats it as a string in double quotes.  It performs
 only the second @code{%printer} in this case, so it prints only once.
 Finally, the parser print @samp{<>} for any symbol, such as @code{TAGLESS},
-that has no semantic type tag.  See also
+that has no semantic type tag.  @xref{Mfcalc Traces, ,Enabling Debug Traces
+for @code{mfcalc}}, for a complete example.
+
 
 
 @node Expect Decl
@@ -6010,17 +6014,41 @@ Use this @var{type} as semantic value.
 @item Default Value:
 @itemize @minus
 @item
-@code{%union} if @code{%union} is used, otherwise @dots{}
+@code{union-directive} if @code{%union} is used, otherwise @dots{}
 @item
 @code{int} if type tags are used (i.e., @samp{%token <@var{type}>@dots{}} or
-@samp{%token <@var{type}>@dots{}} is used), otherwise @dots{}
+@samp{%type <@var{type}>@dots{}} is used), otherwise @dots{}
 @item
-@code{""}
+undefined.
 @end itemize
 
 @item History:
 introduced in Bison 3.0.  Was introduced for Java only in 2.3b as
 @code{stype}.
+@end itemize
+@end deffn
+@c api.value.type
+
+
+@c ================================================== api.value.union.name
+@deffn Directive {%define api.value.union.name} @var{name}
+@itemize @bullet
+@item Language(s):
+C
+
+@item Purpose:
+The tag of the generated @code{union} (@emph{not} the name of the
+@code{typedef}).  This variable is set to @code{@var{id}} when @samp{%union
+@var{id}} is used.  There is no clear reason to give this union a name.
+
+@item Accepted Values:
+Any valid identifier.
+
+@item Default Value:
+@code{YYSTYPE}.
+
+@item History:
+Introduced in Bison 3.0.3.
 @end itemize
 @end deffn
 @c api.value.type
@@ -7522,7 +7550,7 @@ in an associativity related conflict, which can be specified as follows.
 
 The unary-minus is another typical example where associativity is
 usually over-specified, see @ref{Infix Calc, , Infix Notation
-Calculator: @code{calc}}.  The @code{%left} directive is traditionally
+Calculator - @code{calc}}.  The @code{%left} directive is traditionally
 used to declare the precedence of @code{NEG}, which is more than needed
 since it also defines its associativity.  While this is harmless in the
 traditional example, who knows how @code{NEG} might be used in future
@@ -10065,17 +10093,15 @@ A category can be turned off by prefixing its name with @samp{no-}.  For
 instance, @option{-Wno-yacc} will hide the warnings about
 POSIX Yacc incompatibilities.
 
-@item -Werror[=@var{category}]
-@itemx -Wno-error[=@var{category}]
-Enable warnings falling in @var{category}, and treat them as errors.  If no
-@var{category} is given, it defaults to making all enabled warnings into errors.
+@item -Werror
+Turn enabled warnings for every @var{category} into errors, unless they are
+explicitly disabled by @option{-Wno-error=@var{category}}.
+
+@item -Werror=@var{category}
+Enable warnings falling in @var{category}, and treat them as errors.
 
 @var{category} is the same as for @option{--warnings}, with the exception that
 it may not be prefixed with @samp{no-} (see above).
-
-Prefixed with @samp{no}, it deactivates the error treatment for this
-@var{category}. However, the warning itself won't be disabled, or enabled, by
-this option.
 
 Note that the precedence of the @samp{=} and @samp{,} operators is such that
 the following commands are @emph{not} equivalent, as the first will not treat
@@ -10085,6 +10111,14 @@ S/R conflicts as errors.
 $ bison -Werror=yacc,conflicts-sr input.y
 $ bison -Werror=yacc,error=conflicts-sr input.y
 @end example
+
+@item -Wno-error
+Do not turn enabled warnings for every @var{category} into errors, unless
+they are explicitly enabled by @option{-Werror=@var{category}}.
+
+@item -Wno-error=@var{category}
+Deactivate the error treatment for this @var{category}. However, the warning
+itself won't be disabled, or enabled, by this option.
 
 @item -f [@var{feature}]
 @itemx --feature[=@var{feature}]
@@ -10348,9 +10382,23 @@ declare @code{yyerror} as follows:
 int yyerror (char const *);
 @end example
 
-Bison ignores the @code{int} value returned by this @code{yyerror}.
-If you use the Yacc library's @code{main} function, your
-@code{yyparse} function should have the following type signature:
+@noindent
+The @code{int} value returned by this @code{yyerror} is ignored.
+
+The implementation of Yacc library's @code{main} function is:
+
+@example
+int main (void)
+@{
+  setlocale (LC_ALL, "");
+  return yyparse ();
+@}
+@end example
+
+@noindent
+so if you use it, the internationalization support is enabled (e.g., error
+messages are translated), and your @code{yyparse} function should have the
+following type signature:
 
 @example
 int yyparse (void);
@@ -10652,12 +10700,17 @@ The first, inclusive, position of the range, and the first beyond.
 Forwarded to the @code{end} position.
 @end deftypemethod
 
-@deftypemethod {location} {location} operator+ (const location& @var{end})
-@deftypemethodx {location} {location} operator+ (int @var{width})
+@deftypemethod  {location} {location} operator+  (int @var{width})
 @deftypemethodx {location} {location} operator+= (int @var{width})
-@deftypemethodx {location} {location} operator- (int @var{width})
+@deftypemethodx {location} {location} operator-  (int @var{width})
 @deftypemethodx {location} {location} operator-= (int @var{width})
-Various forms of syntactic sugar.
+Various forms of syntactic sugar for @code{columns}.
+@end deftypemethod
+
+@deftypemethod {location} {location} operator+ (const location& @var{end})
+@deftypemethodx {location} {location} operator+= (const location& @var{end})
+Join two locations: starts at the position of the first one, and ends at the
+position of the second.
 @end deftypemethod
 
 @deftypemethod {location} {void} step ()
@@ -10695,8 +10748,8 @@ it must be copyable;
 in order to compute the (default) value of @code{@@$} in a reduction, the
 parser basically runs
 @example
-@@$.begin = @@$1.begin;
-@@$.end   = @@$@var{N}.end; // The location of last right-hand side symbol.
+@@$.begin = @@1.begin;
+@@$.end   = @@@var{N}.end; // The location of last right-hand side symbol.
 @end example
 @noindent
 so there must be copyable @code{begin} and @code{end} members;
@@ -11284,7 +11337,7 @@ regular destructors.  All the values are printed using their
 
 @noindent
 The grammar itself is straightforward (@pxref{Location Tracking Calc, ,
-Location Tracking Calculator: @code{ltcalc}}).
+Location Tracking Calculator - @code{ltcalc}}).
 
 @comment file: calc++-parser.yy
 @example

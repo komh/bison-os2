@@ -1,6 +1,6 @@
 # Checking the C++ Features.                    -*- Autotest -*-
 
-# Copyright (C) 2004-2005, 2007-2013 Free Software Foundation, Inc.
+# Copyright (C) 2004-2005, 2007-2015 Free Software Foundation, Inc.
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -60,8 +60,10 @@ main (void)
 {
   int fail = 0;
   ]AT_YYLTYPE[ loc;  fail += check (loc, "1.1");
+                     fail += check (loc + 10, "1.1-10");
   loc += 10;         fail += check (loc, "1.1-10");
   loc += -5;         fail += check (loc, "1.1-5");
+                     fail += check (loc - 5, "1.1");
   loc -= 5;          fail += check (loc, "1.1");
   // Check that we don't go below.
   // http://lists.gnu.org/archive/html/bug-bison/2013-02/msg00000.html
@@ -70,6 +72,11 @@ main (void)
   loc.columns (10); loc.lines (10); fail += check (loc, "1.1-11.0");
   loc.lines (-2);                   fail += check (loc, "1.1-9.0");
   loc.lines (-10);                  fail += check (loc, "1.1");
+
+  ]AT_YYLTYPE[ loc2 (YY_NULLPTR, 5, 10);
+                   fail += check (loc2, "5.10");
+                   fail += check (loc + loc2, "1.1-5.9");
+  loc += loc2;     fail += check (loc, "1.1-5.9");
   return !fail;
 }
 ]])
@@ -168,17 +175,19 @@ AT_CLEANUP
 ## Variants.  ##
 ## ---------- ##
 
+# Check that the variants are properly supported, including in error
+# recovery.
+
 # AT_TEST([DIRECTIVES])
 # ---------------------
 # Check the support of variants in C++, with the additional DIRECTIVES.
 m4_pushdef([AT_TEST],
 [AT_SETUP([Variants $1])
 
-AT_BISON_OPTION_PUSHDEFS([%skeleton "lalr1.cc" %debug $1])
+AT_BISON_OPTION_PUSHDEFS([%debug $1])
 # Store strings and integers in a list of strings.
 AT_DATA_GRAMMAR([list.y],
 [[%debug
-%skeleton "lalr1.cc"
 %define api.value.type variant
 ]m4_bpatsubst([$1], [\\n], [
 ])[
@@ -226,7 +235,7 @@ typedef std::list<std::string> strings_type;
   template <typename T>
     inline
     std::string
-    string_cast (const T& t)
+    to_string (const T& t)
   {
     std::ostringstream o;
     o << t;
@@ -237,15 +246,18 @@ typedef std::list<std::string> strings_type;
 %token <::std::string> TEXT;
 %token <int> NUMBER;
 %token END_OF_FILE 0;
+%token COMMA ","
 
 %type <::std::string> item;
 // Using the template type to exercize its parsing.
 // Starting with :: to ensure we don't output "<::" which starts by the
 // digraph for the left square bracket.
-%type <::std::list<std::string>> list result;
+%type <::std::list<std::string>> list;
 
-%printer { yyo << $][$; }
+%printer { yyo << $$; }
   <int> <::std::string> <::std::list<std::string>>;
+%destructor { std::cerr << "Destroy: " << $$ << '\n'; } <*>;
+%destructor { std::cerr << "Destroy: \"" << $$ << "\"\n"; } <::std::string>;
 %%
 
 result:
@@ -253,14 +265,14 @@ result:
 ;
 
 list:
-  /* nothing */ { /* Generates an empty string list */ }
-| list item     { std::swap ($][$,$][1); $$.push_back ($][2); }
-| list error    { std::swap ($][$,$][1); }
+  item          { $$.push_back ($][1); }
+| list "," item { std::swap ($$, $][1); $$.push_back ($][3); }
+| list error    { std::swap ($$, $][1); }
 ;
 
 item:
-  TEXT          { std::swap ($][$,$][1); }
-| NUMBER        { if ($][1 == 3) YYERROR; else $][$ = string_cast ($][1); }
+  TEXT          { std::swap ($$, $][1); }
+| NUMBER        { if ($][1 == 3) YYERROR; else $$ = to_string ($][1); }
 ;
 %%
 ]AT_TOKEN_CTOR_IF([],
@@ -279,30 +291,43 @@ namespace yy
                             parser::location_type* yylloc])[)]])[
   {]AT_LOCATION_IF([
     typedef parser::location_type location;])[
-    static int stage = -1;
-    ++stage;
-    if (stage == STAGE_MAX)
-      {]AT_TOKEN_CTOR_IF([[
+    // The 5 is a syntax error whose recovery requires that we discard
+    // the lookahead.  This tests a regression, see
+    // <http://savannah.gnu.org/support/?108481>.
+    static char const *input = "0,1,2,3,45,6";
+    switch (int stage = *input++)
+    {
+      case 0:]AT_TOKEN_CTOR_IF([[
         return parser::make_END_OF_FILE (]AT_LOCATION_IF([location ()])[);]],
 [AT_LOCATION_IF([
         *yylloc = location ();])[
         return parser::token::END_OF_FILE;]])[
-      }
-    else if (stage % 2)
-      {]AT_TOKEN_CTOR_IF([[
-        return parser::make_NUMBER (stage]AT_LOCATION_IF([, location ()])[);]],
-[[
-        yylval->BUILD (int, stage);]AT_LOCATION_IF([
+
+      case ',':
+        ]AT_TOKEN_CTOR_IF([[
+        return parser::make_COMMA (]AT_LOCATION_IF([location ()])[);]], [[
+]AT_LOCATION_IF([
         *yylloc = location ();])[
-        return parser::token::NUMBER;]])[
-      }
-    else
-      {]AT_TOKEN_CTOR_IF([[
-        return parser::make_TEXT (string_cast (stage)]AT_LOCATION_IF([, location ()])[);]], [[
-        yylval->BUILD (std::string, string_cast (stage));]AT_LOCATION_IF([
-        *yylloc = location ();])[
-        return parser::token::TEXT;]])[
-      }
+        return parser::token::COMMA;]])[
+
+      default:
+        stage = stage - '0';
+        if (stage % 2)
+         {]AT_TOKEN_CTOR_IF([[
+           return parser::make_NUMBER (stage]AT_LOCATION_IF([, location ()])[);]], [[
+           yylval->BUILD (int, stage);]AT_LOCATION_IF([
+           *yylloc = location ();])[
+           return parser::token::NUMBER;]])[
+         }
+       else
+         {]AT_TOKEN_CTOR_IF([[
+           return parser::make_TEXT (to_string (stage)]AT_LOCATION_IF([, location ()])[);]], [[
+           yylval->BUILD (std::string, to_string (stage));]AT_LOCATION_IF([
+           *yylloc = location ();])[
+           return parser::token::TEXT;]])[
+         }
+    }
+
     abort ();
   }
 }
@@ -313,20 +338,42 @@ namespace yy
 
 AT_FULL_COMPILE([list])
 AT_PARSER_CHECK([./list], 0,
-[(0, 1, 2, 4)
-])
+[[(0, 1, 2, 4, 6)
+]],
+[[Destroy: ""
+Destroy: "0"
+Destroy: 1
+Destroy: "1"
+Destroy: ()
+Destroy: ""
+Destroy: "2"
+Destroy: ()
+Destroy: ""
+Destroy: 3
+Destroy: ()
+Destroy: ""
+Destroy: "4"
+Destroy: ()
+Destroy: ()
+Destroy: 5
+Destroy: ()
+Destroy: ""
+Destroy: "6"
+Destroy: ()
+Destroy: (0, 1, 2, 4, 6)
+]])
 
 AT_BISON_OPTION_POPDEFS
 AT_CLEANUP
 ])
 
-AT_TEST([])
-AT_TEST([%define parse.assert])
-AT_TEST([%locations %define parse.assert])
-AT_TEST([[%define parse.assert %code {\n#define TWO_STAGE_BUILD\n}]])
-AT_TEST([[%define parse.assert %define api.token.constructor]])
-AT_TEST([[%define parse.assert %define api.token.constructor %define api.token.prefix {TOK_}]])
-AT_TEST([[%locations %define parse.assert %define api.token.constructor %define api.token.prefix {TOK_}]])
+AT_TEST([[%skeleton "lalr1.cc" ]])
+AT_TEST([[%skeleton "lalr1.cc" %define parse.assert]])
+AT_TEST([[%skeleton "lalr1.cc" %define parse.assert %locations]])
+AT_TEST([[%skeleton "lalr1.cc" %define parse.assert %code {\n#define TWO_STAGE_BUILD\n}]])
+AT_TEST([[%skeleton "lalr1.cc" %define parse.assert %define api.token.constructor]])
+AT_TEST([[%skeleton "lalr1.cc" %define parse.assert %define api.token.constructor %define api.token.prefix {TOK_}]])
+AT_TEST([[%skeleton "lalr1.cc" %define parse.assert %define api.token.constructor %define api.token.prefix {TOK_} %locations]])
 
 m4_popdef([AT_TEST])
 
@@ -346,6 +393,7 @@ AT_BISON_OPTION_PUSHDEFS([%skeleton "lalr1.cc"])
 AT_DATA([input.yy],
 [[%skeleton "lalr1.cc"
 %locations
+%defines
 %debug
 %%
 exp: /* empty */;
@@ -353,7 +401,7 @@ exp: /* empty */;
 ]AT_YYERROR_DEFINE[
 ]])
 
-AT_BISON_CHECK([-o input.cc input.yy], 0)
+AT_BISON_CHECK([-o input.cc input.yy])
 
 AT_DATA([Doxyfile],
 [# The PROJECT_NAME tag is a single word (or a sequence of words
@@ -424,7 +472,7 @@ AT_CHECK_DOXYGEN([Private])
 # so don't check compilation.
 m4_pushdef([AT_TEST],
 [AT_BISON_OPTION_PUSHDEFS([%language "C++" %define api.namespace {$1}])
-AT_DATA_GRAMMAR([[input.y]],
+AT_DATA_GRAMMAR([[input.yy]],
 [[%language "C++"
 %define api.namespace {]$1[}
 %union { int i; }
@@ -456,10 +504,10 @@ void
 ]])
 
 
-AT_BISON_CHECK([[-o input.cc input.y]])
+AT_BISON_CHECK([[-o input.cc input.yy]])
 
 m4_if([$#], [1],
-[AT_COMPILE_CXX([[input]], [[input.cc]])
+[AT_COMPILE_CXX([[input]])
 AT_PARSER_CHECK([[./input]])])
 AT_BISON_OPTION_POPDEFS
 ])
@@ -503,7 +551,7 @@ AT_SETUP([[Syntax error discarding no lookahead]])
 
 AT_BISON_OPTION_PUSHDEFS([%skeleton "lalr1.cc"])
 
-AT_DATA_GRAMMAR([[input.yy]],
+AT_DATA_GRAMMAR([[input.y]],
 [[%skeleton "lalr1.cc"
 
 %code {
@@ -556,8 +604,7 @@ yy::parser::error (const std::string &m)
 ]AT_MAIN_DEFINE[
 ]])
 
-AT_BISON_CHECK([[-o input.cc input.yy]])
-AT_COMPILE_CXX([[input]])
+AT_FULL_COMPILE([[input]])
 # This used to print "Discarding 'a'." again at the end.
 AT_PARSER_CHECK([[./input]], [[1]], [[]],
 [[syntax error
@@ -577,7 +624,7 @@ AT_SETUP([[Syntax error as exception]])
 
 AT_BISON_OPTION_PUSHDEFS([%skeleton "lalr1.cc"])
 
-AT_DATA_GRAMMAR([[input.yy]],
+AT_DATA_GRAMMAR([[input.y]],
 [[%skeleton "lalr1.cc"
 
 %code
@@ -632,8 +679,7 @@ yy::parser::error (const std::string &m)
 ]AT_MAIN_DEFINE[
 ]])
 
-AT_BISON_CHECK([[-o input.cc input.yy]])
-AT_COMPILE_CXX([[input]])
+AT_FULL_COMPILE([[input]])
 
 AT_PARSER_CHECK([[./input]], [[0]], [[]],
 [[error: invalid expression
@@ -650,11 +696,14 @@ AT_CLEANUP
 ## Exception safety.  ##
 ## ------------------ ##
 
-# AT_TEST([BISON-DIRECTIVES])
-# ---------------------------
+# AT_TEST([BISON-DIRECTIVES = ''], [WITH-RECOVERY = "with"])
+# ----------------------------------------------------------
 # Check that no object is leaked when exceptions are thrown.
+# WITH-RECOVERY = "with" or "without".
 m4_pushdef([AT_TEST],
-[AT_SETUP([[Exception safety $1]])
+[AT_SETUP([[Exception safety $2 error recovery $1]])
+
+AT_SKIP_IF_EXCEPTION_SUPPORT_IS_POOR
 
 AT_BISON_OPTION_PUSHDEFS([%skeleton "lalr1.cc" $1])
 
@@ -668,27 +717,44 @@ $1
   #include <cassert>
   #include <cstdlib> // size_t and getenv.
   #include <iostream>
-  #include <list>
+  #include <set>
+  #include <string>
 
   bool debug = false;
 
-  /// A class that counts its number of instances.
+  /// A class that tracks its instances.
   struct Object
   {
     char val;
 
-    Object (char v)
-      : val (v)
-    {
-      Object::instances.push_back(this);
-      log (this, "Object::Object");
-    }
-
     Object ()
       : val ('?')
     {
-      Object::instances.push_back(this);
       log (this, "Object::Object");
+      Object::instances.insert (this);
+    }
+
+    Object (const Object& that)
+      : val (that.val)
+    {
+      log (this, "Object::Object");
+      Object::instances.insert (this);
+    }
+
+    Object (char v)
+      : val (v)
+    {
+      log (this, "Object::Object");
+      Object::instances.insert (this);
+    }
+
+    ~Object ()
+    {
+      log (this, "Object::~Object");
+      objects::iterator i = instances.find (this);
+      // Make sure this object is alive.
+      assert (i != instances.end ());
+      Object::instances.erase (i);
     }
 
     Object& operator= (char v)
@@ -697,14 +763,8 @@ $1
       return *this;
     }
 
-    ~Object ()
-    {
-      Object::instances.remove (this);
-      log (this, "Object::~Object");
-    }
-
     // Static part.
-    typedef std::list<const Object*> objects;
+    typedef std::set<const Object*> objects;
     static objects instances;
 
     static bool
@@ -784,22 +844,23 @@ $1
 start: list {]AT_VARIANT_IF([], [ delete $][1]; )[};
 
 list:
-  item       { $][$ = $][1; }
+  item       { $$ = $][1; }
   // Right recursion to load the stack.
-| item list  { $][$ = $][1; ]AT_VARIANT_IF([], [delete $][2]; )[}
+| item list  { $$ = $][1; ]AT_VARIANT_IF([], [delete $][2]; )[}
 ;
 
 item:
-  'a'     { $$][ = $][1; }
-| 'e'     { YYUSE ($][$); YYUSE($][1); error ("syntax error"); }
+  'a'     { $$ = $][1; }
+| 'e'     { YYUSE ($$); YYUSE ($][1); error ("syntax error"); }
 // Not just 'E', otherwise we reduce when 'E' is the lookahead, and
 // then the stack is emptied, defeating the point of the test.
-| 'E' 'a' { YYUSE($][1); $][$ = $][2; }
-| 'R'     { $][$ = YY_NULL; ]AT_VARIANT_IF([], [delete $][1]; )[YYERROR; }
-| 'p'     { $][$ = $][1; }
-| 's'     { $][$ = $][1; throw std::runtime_error ("reduction"); }
-| 'T'     { $][$ = YY_NULL; ]AT_VARIANT_IF([], [delete $][1]; )[YYABORT; }
-| error   { $][$ = YY_NULL; yyerrok; }
+| 'E' 'a' { YYUSE ($][1); $$ = $][2; }
+| 'R'     { ]AT_VARIANT_IF([], [$$ = YY_NULLPTR; delete $][1]; )[YYERROR; }
+| 'p'     { $$ = $][1; }
+| 's'     { $$ = $][1; throw std::runtime_error ("reduction"); }
+| 'T'     { ]AT_VARIANT_IF([], [$$ = YY_NULLPTR; delete $][1]; )[YYABORT; }
+]m4_if([$2], [with],
+[[| error   { $$ = ]AT_VARIANT_IF([], [new ])[Object ('R'); yyerrok; }]])[
 ;
 %%
 
@@ -819,7 +880,8 @@ yylex (yy::parser::semantic_type *lvalp)
   case 'l':
     throw std::runtime_error ("yylex");
   default:
-    lvalp]AT_VARIANT_IF([->build (res)], [->obj = new Object (res)])[;
+    lvalp->]AT_VARIANT_IF([build (Object (res))],
+                          [obj = new Object (res)])[;
     // Fall through.
   case 0:
     return res;
@@ -866,7 +928,7 @@ main (int argc, const char *argv[])
   {
     std::cerr << "unknown exception caught" << std::endl;
   }
-  Object::log (YY_NULL, "end");
+  Object::log (YY_NULLPTR, "end");
   assert (Object::empty());
   return res;
 }
@@ -901,22 +963,23 @@ AT_PARSER_CHECK([[./input aaaaE]], [[2]], [[]],
 
 AT_PARSER_CHECK([[./input aaaaT]], [[1]])
 
-# There is error-recovery, so exit success.
-AT_PARSER_CHECK([[./input aaaaR]], [[0]])
+AT_PARSER_CHECK([[./input aaaaR]], [m4_if([$2], [with], [0], [1])])
 
 AT_BISON_OPTION_POPDEFS
 
 AT_CLEANUP
 ])
 
-AT_TEST
-AT_TEST([%define api.value.type variant])
+AT_TEST([], [with])
+AT_TEST([], [without])
+AT_TEST([%define api.value.type variant], [with])
+AT_TEST([%define api.value.type variant], [without])
 
 m4_popdef([AT_TEST])
 
-## ------------------------------------ ##
-## C++ GLR parser identifier shadowing  ##
-## ------------------------------------ ##
+## ------------------------------------- ##
+## C++ GLR parser identifier shadowing.  ##
+## ------------------------------------- ##
 
 AT_SETUP([[C++ GLR parser identifier shadowing]])
 
@@ -952,7 +1015,7 @@ int yylex (yy::parser::semantic_type *yylval)
 void yy::parser::error (std::string const&)
 {}
 
-int main()
+int main ()
 {}
 ])
 

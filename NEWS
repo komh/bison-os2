@@ -1,13 +1,129 @@
 GNU Bison NEWS
 
-* Noteworthy changes in release 2.7.91 (2013-06-24) [beta]
+* Noteworthy changes in release 3.0.4 (2015-01-23) [stable]
 
-** Java skeleton improvements
+** Bug fixes
 
-  The Java skeleton now supports push parsing.
-  Contributed by Dennis Heimbigner.
+*** C++ with Variants (lalr1.cc)
 
-* Noteworthy changes in release 2.7.90 (2013-05-30) [beta]
+  Fix a compiler warning when no %destructor use $$.
+
+*** Test suites
+
+  Several portability issues in tests were fixed.
+
+* Noteworthy changes in release 3.0.3 (2015-01-15) [stable]
+
+** Bug fixes
+
+*** C++ with Variants (lalr1.cc)
+
+  Problems with %destructor and '%define parse.assert' have been fixed.
+
+*** Named %union support (yacc.c, glr.c)
+
+  Bison 3.0 introduced a regression on named %union such as
+
+    %union foo { int ival; };
+
+  The possibility to use a name was introduced "for Yacc compatibility".
+  It is however not required by POSIX Yacc, and its usefulness is not clear.
+
+*** %define api.value.type union with %defines (yacc.c, glr.c)
+
+  The C parsers were broken when %defines was used together with "%define
+  api.value.type union".
+
+*** Redeclarations are reported in proper order
+
+  On
+
+    %token FOO "foo"
+    %printer {} "foo"
+    %printer {} FOO
+
+  bison used to report:
+
+    /tmp/foo.yy:2.10-11: error: %printer redeclaration for FOO
+     %printer {} "foo"
+              ^^
+    /tmp/foo.yy:3.10-11:     previous declaration
+     %printer {} FOO
+              ^^
+
+  Now, the "previous" declaration is always the first one.
+
+
+** Documentation
+
+  Bison now installs various files in its docdir (which defaults to
+  '/usr/local/share/doc/bison'), including the three fully blown examples
+  extracted from the documentation:
+
+   - rpcalc
+     Reverse polish calculator, a simple introductory example.
+   - mfcalc
+     Multi-function Calc, a calculator with memory and functions and located
+     error messages.
+   - calc++
+     a calculator in C++ using variant support and token constructors.
+
+* Noteworthy changes in release 3.0.2 (2013-12-05) [stable]
+
+** Bug fixes
+
+*** Generated source files when errors are reported
+
+  When warnings are issued and -Werror is set, bison would still generate
+  the source files (*.c, *.h...).  As a consequence, some runs of "make"
+  could fail the first time, but not the second (as the files were generated
+  anyway).
+
+  This is fixed: bison no longer generates this source files, but, of
+  course, still produces the various reports (*.output, *.xml, etc.).
+
+*** %empty is used in reports
+
+  Empty right-hand sides are denoted by '%empty' in all the reports (text,
+  dot, XML and formats derived from it).
+
+*** YYERROR and variants
+
+  When C++ variant support is enabled, an error triggered via YYERROR, but
+  not caught via error recovery, resulted in a double deletion.
+
+* Noteworthy changes in release 3.0.1 (2013-11-12) [stable]
+
+** Bug fixes
+
+*** Errors in caret diagnostics
+
+  On some platforms, some errors could result in endless diagnostics.
+
+*** Fixes of the -Werror option
+
+  Options such as "-Werror -Wno-error=foo" were still turning "foo"
+  diagnostics into errors instead of warnings.  This is fixed.
+
+  Actually, for consistency with GCC, "-Wno-error=foo -Werror" now also
+  leaves "foo" diagnostics as warnings.  Similarly, with "-Werror=foo
+  -Wno-error", "foo" diagnostics are now errors.
+
+*** GLR Predicates
+
+  As demonstrated in the documentation, one can now leave spaces between
+  "%?" and its "{".
+
+*** Installation
+
+  The yacc.1 man page is no longer installed if --disable-yacc was
+  specified.
+
+*** Fixes in the test suite
+
+  Bugs and portability issues.
+
+* Noteworthy changes in release 3.0 (2013-07-25) [stable]
 
 ** WARNING: Future backward-incompatibilities!
 
@@ -527,6 +643,9 @@ GNU Bison NEWS
   is possible to add code to the parser's constructors using "%code init"
   and "%define init_throws".
   Contributed by Paolo Bonzini.
+
+  The Java skeleton now supports push parsing.
+  Contributed by Dennis Heimbigner.
 
 ** C++ skeletons improvements
 
@@ -2629,7 +2748,7 @@ Output file does not redefine const for C++.
 
 -----
 
-Copyright (C) 1995-2013 Free Software Foundation, Inc.
+Copyright (C) 1995-2015 Free Software Foundation, Inc.
 
 This file is part of Bison, the GNU Parser Generator.
 

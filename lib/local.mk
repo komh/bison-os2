@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2013 Free Software Foundation, Inc.
+# Copyright (C) 2001-2015 Free Software Foundation, Inc.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -51,6 +51,8 @@ lib_libbison_a_SOURCES +=                       \
   lib/get-errno.c
 
 # The Yacc compatibility library.
-lib_LIBRARIES = $(YACC_LIBRARY)
+if ENABLE_YACC
+lib_LIBRARIES = lib/liby.a
 EXTRA_LIBRARIES = lib/liby.a
 lib_liby_a_SOURCES = lib/main.c lib/yyerror.c
+endif

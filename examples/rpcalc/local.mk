@@ -1,4 +1,4 @@
-# Copyright (C) 2005-2006, 2008-2013 Free Software Foundation, Inc.
+# Copyright (C) 2005-2006, 2008-2015 Free Software Foundation, Inc.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,18 +18,22 @@
 ## -------------------- ##
 
 BUILT_SOURCES += $(rpcalc_sources)
-CLEANFILES +=  examples/rpcalc/rpcalc.[ch] examples/rpcalc/rpcalc.output
+CLEANFILES +=  %D%/rpcalc.[ch] %D%/rpcalc.output
 
-rpcalc_extracted =				\
-  examples/rpcalc/rpcalc.y
-rpcalc_sources =				\
-  $(rpcalc_extracted)
+rpcalc_extracted = %D%/rpcalc.y
+rpcalc_sources = $(rpcalc_extracted)
 extracted += $(rpcalc_extracted)
 
-check_PROGRAMS += examples/rpcalc/rpcalc
-examples_rpcalc_rpcalc_LDADD = -lm
-nodist_examples_rpcalc_rpcalc_SOURCES =		\
-  $(rpcalc_sources)
+check_PROGRAMS += %D%/rpcalc
+%C%_rpcalc_LDADD = -lm
+nodist_%C%_rpcalc_SOURCES = $(rpcalc_sources)
 
-examples_rpcalc_rpcalc_CPPFLAGS = -I$(top_builddir)/examples/rpcalc
-dist_TESTS += examples/rpcalc/rpcalc.test
+%C%_rpcalc_CPPFLAGS = -I$(top_builddir)/%D%
+dist_TESTS += %D%/rpcalc.test
+
+## ------------ ##
+## Installing.  ##
+## ------------ ##
+
+rpcalcdir = $(docdir)/examples/rpcalc
+rpcalc_DATA = $(rpcalc_extracted)
